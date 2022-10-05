@@ -58,18 +58,6 @@ const osThreadAttr_t taskBlu_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for taskRed */
-osThreadId_t taskRedHandle;
-const osThreadAttr_t taskRed_attributes = {
-  .name = "taskRed",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
-/* Definitions for blinkSemaphore */
-osSemaphoreId_t blinkSemaphoreHandle;
-const osSemaphoreAttr_t blinkSemaphore_attributes = {
-  .name = "blinkSemaphore"
-};
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -80,7 +68,6 @@ static void MX_GPIO_Init(void);
 static void MX_SPI1_Init(void);
 void StartDefaultTask(void *argument);
 void StartTaskBlu(void *argument);
-void StartTaskRed(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -133,10 +120,6 @@ int main(void)
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
 
-  /* Create the semaphores(s) */
-  /* creation of blinkSemaphore */
-  blinkSemaphoreHandle = osSemaphoreNew(1, 1, &blinkSemaphore_attributes);
-
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
@@ -155,9 +138,6 @@ int main(void)
 
   /* creation of taskBlu */
   taskBluHandle = osThreadNew(StartTaskBlu, NULL, &taskBlu_attributes);
-
-  /* creation of taskRed */
-  taskRedHandle = osThreadNew(StartTaskRed, NULL, &taskRed_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -285,6 +265,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
@@ -292,6 +273,12 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_14|GPIO_PIN_7, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PC13 */
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB0 PB14 PB7 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_14|GPIO_PIN_7;
@@ -337,88 +324,21 @@ void StartTaskBlu(void *argument)
   /* Infinite loop */
   for(;;)
   {
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);		//Switch off Red LED
-	//osDelay(1);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);			//Switch ON  blu LED to indicate active task
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);		//Switch off Red LED
+	  			        		//osDelay(1);
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);	//SEMAPHORE LED off
 
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
 
+	  if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)){
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
+	  }
+	  else{
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
+      }
 
-
-	if( blinkSemaphoreHandle != NULL )
-			    {
-			        /* See if we can obtain the semaphore.  If the semaphore is not
-			        available wait 10 ticks to see if it becomes free. */
-			        if( osSemaphoreAcquire( blinkSemaphoreHandle, 10) == osOK )
-			        {
-			            /* We were able to obtain the semaphore and can now access the
-			            shared resource. */
-
-			        	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);	//SEMAPHORE LED off
-
-			            /* We have finished accessing the shared resource.  Release the
-			            semaphore. */
-			        	osSemaphoreRelease( blinkSemaphoreHandle );
-			        }
-			        else
-			        {
-			            /* We could not obtain the semaphore and can therefore not access
-			            the shared resource safely. */
-			        }
-			    }
-
-
-	 //osDelay(1); //Wait to make changes not too rapid for human eye
   }
   /* USER CODE END StartTaskBlu */
-}
-
-/* USER CODE BEGIN Header_StartTaskRed */
-/**
-* @brief Function implementing the taskRed thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartTaskRed */
-void StartTaskRed(void *argument)
-{
-  /* USER CODE BEGIN StartTaskRed */
-  /* Infinite loop */
-  for(;;)
-  {
-	  //osDelay(1);
-
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);		//Switch ON  Red LED to indicate active task
-
-		//osDelay(1);
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);		//Switch off blu LED
-
-
-		if( blinkSemaphoreHandle != NULL )
-		    {
-		        /* See if we can obtain the semaphore.  If the semaphore is not
-		        available wait 10 ticks to see if it becomes free. */
-		        if( osSemaphoreAcquire( blinkSemaphoreHandle, 10) == osOK )
-		        {
-		            /* We were able to obtain the semaphore and can now access the
-		            shared resource. */
-
-		        	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);	//SEMAPHORE LED on
-
-		            /* We have finished accessing the shared resource.  Release the
-		            semaphore. */
-		        	osSemaphoreRelease( blinkSemaphoreHandle );
-		        }
-		        else
-		        {
-		            /* We could not obtain the semaphore and can therefore not access
-		            the shared resource safely. */
-		        }
-		    }
-
-		//osDelay(1);								//Wait to make changes not too rapid for human eye
-
-  }
-  /* USER CODE END StartTaskRed */
 }
 
 /**
