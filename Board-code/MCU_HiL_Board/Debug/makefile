@@ -9,6 +9,10 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/subdir.mk
+-include Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/subdir.mk
+-include Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/subdir.mk
+-include Middlewares/Third_Party/FreeRTOS/Source/subdir.mk
 -include Drivers/STM32F7xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
@@ -60,8 +64,8 @@ all: main-build
 main-build: MCU_HiL_Board.elf secondary-outputs
 
 # Tool invocations
-MCU_HiL_Board.elf MCU_HiL_Board.map: $(OBJS) $(USER_OBJS) /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/MCU_HiL_Board/STM32F767ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "MCU_HiL_Board.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/MCU_HiL_Board/STM32F767ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MCU_HiL_Board.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+MCU_HiL_Board.elf MCU_HiL_Board.map: $(OBJS) $(USER_OBJS) C:\SKOLAN\ H\T11\Embedded\ Projekt\ IL2232\Github\SOFTWARE_DEV\Board-code\MCU_HiL_Board\STM32F767ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "MCU_HiL_Board.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\SKOLAN H\T11\Embedded Projekt IL2232\Github\SOFTWARE_DEV\Board-code\MCU_HiL_Board\STM32F767ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MCU_HiL_Board.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
