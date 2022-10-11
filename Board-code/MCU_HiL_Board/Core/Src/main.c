@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "semphr.h"
+
 
 /* USER CODE END Includes */
 
@@ -441,6 +441,7 @@ void StartDefaultTask(void *argument)
   /* init code for LWIP */
   MX_LWIP_Init();
   /* USER CODE BEGIN 5 */
+  //Netif_Config();
   /* Infinite loop */
   for(;;)
   {
@@ -460,13 +461,14 @@ void StartTaskStartThread(void *argument)
 {
   /* USER CODE BEGIN StartTaskStartThread */
 
-   tcpip_init(NULL, NULL);
+	//tcpip_init(NULL, NULL);
 
-   Netif_Config();
+   //Netif_Config();		//TO BE IMPLEMENTED/COPIED FROM EXAMPLE.
   /* Infinite loop */
 
   for(;;)
   {
+	  //osDelay(1);
 	  osThreadTerminate(NULL);
   }
   /* USER CODE END StartTaskStartThread */

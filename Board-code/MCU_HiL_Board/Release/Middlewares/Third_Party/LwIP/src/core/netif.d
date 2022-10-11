@@ -87,7 +87,10 @@ Middlewares/Third_Party/LwIP/src/core/netif.o: \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
- ../Middlewares/Third_Party/LwIP/src/include/netif/ethernet.h
+ ../Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h \
+ ../Middlewares/Third_Party/LwIP/src/include/lwip/timeouts.h \
+ ../Middlewares/Third_Party/LwIP/src/include/netif/ethernet.h \
+ ../Middlewares/Third_Party/LwIP/src/include/lwip/dhcp.h
 ../Middlewares/Third_Party/LwIP/src/include/lwip/opt.h:
 ../LWIP/Target/lwipopts.h:
 ../Core/Inc/main.h:
@@ -176,4 +179,7 @@ Middlewares/Third_Party/LwIP/src/core/netif.o: \
 ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h:
+../Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h:
+../Middlewares/Third_Party/LwIP/src/include/lwip/timeouts.h:
 ../Middlewares/Third_Party/LwIP/src/include/netif/ethernet.h:
+../Middlewares/Third_Party/LwIP/src/include/lwip/dhcp.h:
