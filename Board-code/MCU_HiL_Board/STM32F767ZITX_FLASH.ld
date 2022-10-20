@@ -180,6 +180,24 @@ SECTIONS
     libm.a ( * )
     libgcc.a ( * )
   }
+  
+  .lwip_sec (NOLOAD) :
+  {
+  	. = ABSOLUTE(0x20020000);
+  	*(.RxDecripsection)
+  	
+  	. = ABSOLUTE(0x20020080);
+  	*(.TxDecripSection)
+  	
+  	. = ABSOLUTE(0x20020100);
+  	*(.RxArraySection)
+  	
+  	. = ABSOLUTE(0x200218D0);
+  	*(.TxArraySection)
+  } >RAM
+  
+  
+  
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
 }
