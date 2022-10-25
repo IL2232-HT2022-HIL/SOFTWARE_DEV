@@ -370,7 +370,7 @@ void StartTaskBlu(void *argument)
 		   semaphore. */
 		msg.Buf[0] = 0x55U;                                         // do some work...
 		msg.Idx    = 0U;
-		osMessageQueuePut(mid_MsgQueue, &msg, 0U, 0U);
+		osMessageQueuePut(MSGQ, &msg, 0U, 0U);
 
 	}
 
@@ -406,7 +406,7 @@ void StartTaskRed(void *argument)
 			{
 			/* See if we can obtain the semaphore.  If the semaphore is not
 			   available wait 10 ticks to see if it becomes free. */
-				status = osMessageQueueGet(mid_MsgQueue, &msg, NULL, 0U);
+				status = osMessageQueueGet(MSGQ, &msg, NULL, 0U);
 				if (status == osOK)
 				{
 					HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);	//SEMAPHORE LED off
