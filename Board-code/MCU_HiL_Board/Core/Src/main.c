@@ -28,7 +28,10 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+typedef struct {                                // object data type
+  uint8_t Buf[32];
+  uint8_t Idx;
+} MSGQ_obj;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -63,7 +66,7 @@ osThreadId_t taskRedHandle;
 const osThreadAttr_t taskRed_attributes = {
   .name = "taskRed",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+  .priority = (osPriority_t) osPriorityHigh,
 };
 /* Definitions for blinkSemaphore */
 osSemaphoreId_t blinkSemaphoreHandle;
@@ -72,6 +75,7 @@ const osSemaphoreAttr_t blinkSemaphore_attributes = {
 };
 /* USER CODE BEGIN PV */
 
+osMessageQueueId_t MSGQ;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,6 +92,14 @@ void StartTaskRed(void *argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+int Init_MsgQueue (void) {
+
+  MSGQ = osMessageQueueNew(MSGQ_obj, sizeof(MSGQ_obj), NULL);
+  if (MSGQ == NULL) {
+	  return -1;
+  }
+  return 0;
+}
 
 /* USER CODE END 0 */
 
@@ -146,6 +158,7 @@ int main(void)
   /* USER CODE END RTOS_TIMERS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
+  Init_MsgQueue();
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 
@@ -334,6 +347,7 @@ void StartDefaultTask(void *argument)
 void StartTaskBlu(void *argument)
 {
   /* USER CODE BEGIN StartTaskBlu */
+  MSGQ_obj msg;
   /* Infinite loop */
   for(;;)
   {
@@ -344,27 +358,21 @@ void StartTaskBlu(void *argument)
 
 
 
-	if( blinkSemaphoreHandle != NULL )
-			    {
-			        /* See if we can obtain the semaphore.  If the semaphore is not
-			        available wait 10 ticks to see if it becomes free. */
-			        if( osSemaphoreAcquire( blinkSemaphoreHandle, 10) == osOK )
-			        {
-			            /* We were able to obtain the semaphore and can now access the
-			            shared resource. */
+	if( MSGQ != NULL )
+	{
+	/* See if we can obtain the semaphore.  If the semaphore is not
+	   available wait 10 ticks to see if it becomes free. */
 
-			        	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);	//SEMAPHORE LED off
 
-			            /* We have finished accessing the shared resource.  Release the
-			            semaphore. */
-			        	osSemaphoreRelease( blinkSemaphoreHandle );
-			        }
-			        else
-			        {
-			            /* We could not obtain the semaphore and can therefore not access
-			            the shared resource safely. */
-			        }
-			    }
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);	//SEMAPHORE LED off
+
+		/* We have finished accessing the shared resource.  Release the
+		   semaphore. */
+		msg.Buf[0] = 0x55U;                                         // do some work...
+		msg.Idx    = 0U;
+		osMessageQueuePut(mid_MsgQueue, &msg, 0U, 0U);
+
+	}
 
 
 	 //osDelay(1); //Wait to make changes not too rapid for human eye
@@ -382,6 +390,7 @@ void StartTaskBlu(void *argument)
 void StartTaskRed(void *argument)
 {
   /* USER CODE BEGIN StartTaskRed */
+  MSGQ_obj msg;
   /* Infinite loop */
   for(;;)
   {
@@ -393,32 +402,25 @@ void StartTaskRed(void *argument)
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);		//Switch off blu LED
 
 
-		if( blinkSemaphoreHandle != NULL )
-		    {
-		        /* See if we can obtain the semaphore.  If the semaphore is not
-		        available wait 10 ticks to see if it becomes free. */
-		        if( osSemaphoreAcquire( blinkSemaphoreHandle, 10) == osOK )
-		        {
-		            /* We were able to obtain the semaphore and can now access the
-		            shared resource. */
+		if( MSGQ != NULL )
+			{
+			/* See if we can obtain the semaphore.  If the semaphore is not
+			   available wait 10 ticks to see if it becomes free. */
+				status = osMessageQueueGet(mid_MsgQueue, &msg, NULL, 0U);
+				if (status == osOK)
+				{
+					HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);	//SEMAPHORE LED off
 
-		        	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);	//SEMAPHORE LED on
+					/* We have finished accessing the shared resource.  Release the
+					   semaphore. */
+				}
 
-		            /* We have finished accessing the shared resource.  Release the
-		            semaphore. */
-		        	osSemaphoreRelease( blinkSemaphoreHandle );
-		        }
-		        else
-		        {
-		            /* We could not obtain the semaphore and can therefore not access
-		            the shared resource safely. */
-		        }
-		    }
+			}
 
-		//osDelay(1);								//Wait to make changes not too rapid for human eye
 
+			 //osDelay(1); //Wait to make changes not too rapid for human eye
   }
-  /* USER CODE END StartTaskRed */
+  /* USER CODE END StartTaskBlu */
 }
 
 /**
