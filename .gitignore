@@ -1,1 +1,4 @@
 *.vs
+*.pyc
+*.html
+*.xml
