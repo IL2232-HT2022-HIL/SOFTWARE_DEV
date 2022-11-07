@@ -15,9 +15,15 @@ BINARY_OBJECTS = {
 "TL4_Car"        : 12,
 }
 
+VALUE_BASED_OBJECTS = {
+"POT"            : 0,
+"TEMP_SENSOR"    : 1,
+"HUMI_SENSOR"    : 2,
+}
+
 TIME_UNITS = {
-"second"         : 1000,
-"seconds"        : 1000,
-"millisecond"    : 1, 
-"milliseconds"   : 1
+"second"         : 1,
+"seconds"        : 1,
+"millisecond"    : 1000, 
+"milliseconds"   : 1000
 }
