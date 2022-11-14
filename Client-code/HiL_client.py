@@ -1,6 +1,6 @@
 import time
 import HiL_client_communication
-from HiL_config import BINARY_OBJECTS, TIME_UNITS
+from HiL_config import BINARY_OBJECTS, TIME_UNITS, ADC_RESOLUTION, DAC_RESOLUTION, DAC_REFERENCE, ADC_REFERENCE
 
 def status_instruction():
 	#to be filled as a setup function
@@ -139,6 +139,7 @@ def HiL_client_set_humi_instruction(instruction):
 		print(encoded_message)
 		#return 0
 
+
 def template_instruction():
 	#is left for adding any other keywords
 	raise Exception("THIS FUNCTION IS NOT YET IMPLEMENTED")
@@ -146,6 +147,7 @@ def template_instruction():
 # The following codes are just for debuging this file
 if __name__=="__main__":
 	HiL_client_turn_on_instruction("button3_A")
-	HiL_client_tune_instruction("POT to 2.8")
-	HiL_client_set_temp_instruction("TEMP_SENSOR to 35")
-	HiL_client_set_humi_instruction("HUMI_SENSOR to 44.5")
+	#HiL_client_tune_instruction("POT to 2.8")
+	#HiL_client_set_temp_instruction("TEMP_SENSOR to 35")
+	#HiL_client_set_humi_instruction("HUMI_SENSOR to 44.5")
+	#print(HiL_client_POTEN_ADC(2.8))

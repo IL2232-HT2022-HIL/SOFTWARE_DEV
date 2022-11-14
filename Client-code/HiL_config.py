@@ -1,7 +1,7 @@
 
 CHANGE_REQUEST = {
-"ACTUATE"        :0,
-"POTEN"           :1,
+"ACTUATE"        :80,
+"POTEN"          :1,
 "SHT20"          :2,
 }
 
@@ -9,6 +9,13 @@ CONTROLLER_REQUEST = {
 "CONTROLLER_REQUEST_GET"        :0,
 "CONTROLLER_REQUEST_ACTUATE"    :1,   
 }
+
+
+
+DAC_RESOLUTION = 12
+ADC_RESOLUTION = 12
+DAC_REFERENCE = 3.3
+ADC_REFERENCE = 3.3
 
 BINARY_OBJECTS = {
 "SW5"            : 0,
