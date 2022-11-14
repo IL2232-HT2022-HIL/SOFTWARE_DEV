@@ -1,11 +1,12 @@
 import time
+import HiL_client_communication
 from HiL_config import BINARY_OBJECTS, TIME_UNITS
 
 def status_instruction():
 	#to be filled as a setup function
 	pass
 
-def turn_on_instruction(instruction):
+def HiL_client_turn_on_instruction(instruction):
 
 	string_list = instruction.split(" ")
 
@@ -17,10 +18,13 @@ def turn_on_instruction(instruction):
 		raise Exception("Object is not supported")
 		
 	else:
-		print("acutate_{}_ON".format(string_list[0]))
-		return 0
+		python_instruction = "ACTUATE "+string_list[0]+" ON"
+		print(python_instruction)
+		encoded_message = HiL_client_communication.HiL_client_communication_encode(python_instruction)
+		print(encoded_message)
+		#return 0
 
-def turn_off_instruction(instruction):
+def HiL_client_turn_off_instruction(instruction):
 
 	string_list = instruction.split(" ")
 
@@ -32,10 +36,14 @@ def turn_off_instruction(instruction):
 		raise Exception("Object is not supported")
 		
 	else:
-		print("acutate_{}_OFF".format(string_list[0]))
+		#print("ACTUATE_{}_OFF".format(string_list[0]))
+		python_instruction = "ACTUATE "+string_list[0]+" OFF"
+		print(python_instruction)
+		encoded_message = HiL_client_communication.HiL_client_communication_encode(python_instruction)
+		print(encoded_message)
 		return 0
 
-def push_instruction(instruction):
+def HiL_client_push_instruction(instruction):
 
 	string_list = instruction.split(" ")
 
@@ -50,15 +58,25 @@ def push_instruction(instruction):
 	elif string_list[3] not in TIME_UNITS:
 		raise Exception("Time unit is not supported")
 	else:
-		print("acutate_{}_ON".format(string_list[0]))
+		#print("ACTUATE_{}_ON".format(string_list[0]))
+		python_instruction = "ACTUATE "+string_list[0]+" ON"
+		print(python_instruction)
+		encoded_message = HiL_client_communication.HiL_client_communication_encode(python_instruction)
+		print(encoded_message)
+		
 		sleep_time = int(string_list[2]) / (TIME_UNITS[string_list[3]])
 		#print(sleep_time)
 		print("Pushing {} for {} {}...".format(string_list[0], string_list[2], string_list[3]))
 		time.sleep(sleep_time)
-		print("acutate_{}_OFF".format(string_list[0]))
-		return 0
 
-def tune_instruction(instruction):
+		#print("ACTUATE_{}_OFF".format(string_list[0]))
+		python_instruction = "ACTUATE "+string_list[0]+" OFF"
+		print(python_instruction)
+		encoded_message = HiL_client_communication.HiL_client_communication_encode(python_instruction)
+		print(encoded_message)
+		#return 0
+
+def HiL_client_tune_instruction(instruction):
 
 	string_list = instruction.split(" ")
 
@@ -71,10 +89,15 @@ def tune_instruction(instruction):
 	elif string_list[1] != "to":
 		raise Exception("Missing word: to")
 	else:
-		print("The value of {} is set to {}V.".format(string_list[0], string_list[2]))
-		return 0
+		#print("POTEN_{}_{}".format(string_list[0], string_list[2]))
+		#print("The value of {} is set to {}V.".format(string_list[0], string_list[2]))
+		python_instruction = "POTEN "+string_list[0]+" "+string_list[2]
+		print(python_instruction)
+		encoded_message = HiL_client_communication.HiL_client_communication_encode(python_instruction)
+		print(encoded_message)
+		#return 0
 
-def set_temp_instruction(instruction):
+def HiL_client_set_temp_instruction(instruction):
 
 	string_list = instruction.split(" ")
 
@@ -87,10 +110,15 @@ def set_temp_instruction(instruction):
 	elif string_list[1] != "to":
 		raise Exception("Missing word: to")
 	else:
-		print("The temperature on {} is set to {} Celsius degree.".format(string_list[0], string_list[2]))
-		return 0
+		#print("SHT20_{}_{}".format(string_list[0], string_list[2]))
+		#print("The temperature on {} is set to {} Celsius degree.".format(string_list[0], string_list[2]))
+		python_instruction = "SHT20 "+string_list[0]+" "+string_list[2]
+		print(python_instruction)
+		encoded_message = HiL_client_communication.HiL_client_communication_encode(python_instruction)
+		print(encoded_message)
+		#return 0
 
-def set_humi_instruction(instruction):
+def HiL_client_set_humi_instruction(instruction):
 
 	string_list = instruction.split(" ")
 
@@ -103,8 +131,13 @@ def set_humi_instruction(instruction):
 	elif string_list[1] != "to":
 		raise Exception("Missing word: to")
 	else:
-		print("The humidity on {} is set to {}%.".format(string_list[0], string_list[2]))
-		return 0
+		#print("SHT20_{}_{}".format(string_list[0], string_list[2]))
+		#print("The humidity on {} is set to {}%.".format(string_list[0], string_list[2]))
+		python_instruction = "SHT20 "+string_list[0]+" "+string_list[2]
+		print(python_instruction)
+		encoded_message = HiL_client_communication.HiL_client_communication_encode(python_instruction)
+		print(encoded_message)
+		#return 0
 
 def template_instruction():
 	#is left for adding any other keywords
@@ -112,6 +145,7 @@ def template_instruction():
 
 # The following codes are just for debuging this file
 if __name__=="__main__":
-    #push_instruction("button3_A for 3 seconds")
-	set_temp_instruction("TEMP_SENSOR to 35")
-	set_humi_instruction("HUMI_SENSOR to 44.5")
+	HiL_client_turn_on_instruction("button3_A")
+	HiL_client_tune_instruction("POT to 2.8")
+	HiL_client_set_temp_instruction("TEMP_SENSOR to 35")
+	HiL_client_set_humi_instruction("HUMI_SENSOR to 44.5")

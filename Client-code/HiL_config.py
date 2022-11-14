@@ -1,4 +1,15 @@
 
+CHANGE_REQUEST = {
+"ACTUATE"        :0,
+"POTEN"           :1,
+"SHT20"          :2,
+}
+
+CONTROLLER_REQUEST = {
+"CONTROLLER_REQUEST_GET"        :0,
+"CONTROLLER_REQUEST_ACTUATE"    :1,   
+}
+
 BINARY_OBJECTS = {
 "SW5"            : 0,
 "SW6"            : 1,
@@ -15,11 +26,24 @@ BINARY_OBJECTS = {
 "TL4_Car"        : 12,
 }
 
+BINARY_VALUE = {
+"OFF"           : 0,
+"ON"            : 1,
+}
+
+SHT20_OBJECTS = {
+"TEMP_SENSOR"    : 0,
+"HUMI_SENSOR"    : 1,
+}
+
+'''
 VALUE_BASED_OBJECTS = {
 "POT"            : 0,
 "TEMP_SENSOR"    : 1,
 "HUMI_SENSOR"    : 2,
 }
+'''
+
 
 TIME_UNITS = {
 "second"         : 1,
