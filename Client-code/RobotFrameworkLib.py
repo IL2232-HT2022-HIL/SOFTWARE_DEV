@@ -133,4 +133,4 @@ class RobotFrameworkLib():
 # The following codes are just for debuging this file
 obj = RobotFrameworkLib()
 if __name__=="__main__":
-	obj.tune("POT to 1.2")
+	obj.set_humi("HUMI_SENSOR to 45.7")
