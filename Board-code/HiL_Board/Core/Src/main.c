@@ -23,6 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
 
 /* USER CODE END Includes */
 
@@ -70,6 +71,7 @@ I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi3;
+DMA_HandleTypeDef hdma_spi1_rx;
 
 TIM_HandleTypeDef htim1;
 
@@ -93,6 +95,11 @@ const osThreadAttr_t ShiftRegLightOn_attributes = {
 };
 /* USER CODE BEGIN PV */
 
+//sofie
+uint8_t light_state[] = {0x00, 0x00, 0x00};
+uint8_t brightness = 0;
+uint8_t temp_light_state[3];
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,16 +113,24 @@ static void MX_SPI1_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_UART7_Init(void);
+static void MX_DMA_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 void StartDefaultTask(void *argument);
 void StartShiftRegLightOn(void *argument);
 
 /* USER CODE BEGIN PFP */
 
+void DMA_Ready_Func(DMA_HandleTypeDef *hdma){
+	printf("DMA_Ready_func got a call");
+}
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+//sofie
+extern void initialise_monitor_handles(void);
 
 /* USER CODE END 0 */
 
@@ -155,8 +170,14 @@ int main(void)
   MX_SPI3_Init();
   MX_TIM1_Init();
   MX_UART7_Init();
+  MX_DMA_Init();
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
+
+  //sofie
+  initialise_monitor_handles();
+  memset(temp_light_state, 0, sizeof(temp_light_state));
+  HAL_DMA_RegisterCallback(&hdma_spi1_rx, HAL_DMA_XFER_CPLT_CB_ID, DMA_Ready_Func);
 
   /* USER CODE END 2 */
 
@@ -645,6 +666,22 @@ static void MX_USB_OTG_FS_PCD_Init(void)
 }
 
 /**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA2_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA2_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -799,7 +836,31 @@ void StartShiftRegLightOn(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+	  printf("Time to receive!");
+	  int rc;
+	  rc=HAL_SPI_Receive_DMA(&hspi1, temp_light_state, sizeof(temp_light_state));
+
+	  if(rc>0){
+		  printf("returkoden är lika med %d\r\n", rc);
+	  }
+
+	  osDelay(10000);
+	  printf("Lampan är %02x:%02x:%02x\n", temp_light_state[0], temp_light_state[1], temp_light_state[2]);
+
+	  if(!(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15))){
+		  //if reset is triggered - clear out values stored in globally accessible buffer
+		  printf("Reset triggered\n");
+		  light_state[0] = 0;
+		  light_state[1] = 0;
+		  light_state[2] = 0;
+
+		  brightness = 0;
+	  }
+
+	  if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_2)){
+		  //take values from parallel output (lights on/off) and place in a globally accessible buffer
+		  memcpy(light_state, temp_light_state, sizeof(light_state));
+	  }
   }
   /* USER CODE END StartShiftRegLightOn */
 }
