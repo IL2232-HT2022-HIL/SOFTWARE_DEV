@@ -1,0 +1,12 @@
+#include "setup.h"
+
+
+int Init_MsgQueue (osMessageQueueId_t Q_name) {
+
+  struct MSGQ_Obj = MSGQ_obj;
+  Q_name = osMessageQueueNew(MSGQ_Obj, sizeof(MSGQ_obj), NULL);
+  if (Q_name == NULL) {
+	  return -1;
+  }
+  return 0;
+}

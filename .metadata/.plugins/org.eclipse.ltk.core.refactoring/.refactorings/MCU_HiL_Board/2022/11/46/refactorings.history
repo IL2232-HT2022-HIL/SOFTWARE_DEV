@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;MCU_HiL_Board/Core/Src/HIL_gateway.c&apos; to &apos;HiL_gateway.c&apos;" description="Rename resource &apos;HIL_gateway.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Core/Src/HIL_gateway.c" name="HiL_gateway.c" stamp="1668085509702" updateReferences="true"/>
+</session>
