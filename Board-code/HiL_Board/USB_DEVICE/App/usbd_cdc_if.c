@@ -53,7 +53,7 @@
 /* USER CODE BEGIN PRIVATE_TYPES */
 extern uint8_t buffer[64]; 		//Buffer for use without msg queue
 
-extern osMessageQueueId_t MSGQ;
+extern osMessageQueueId_t MSGQ_Rx;
 
 
 /* USER CODE END PRIVATE_TYPES */
@@ -277,11 +277,11 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
   //memcpy (buffer, Buf, len);			// and then clear the USB buffer.
   //memset (Buf, '\0', len);
 
-  if( MSGQ != NULL )
+  if( MSGQ_Rx != NULL )
   	{
 	  	memset (msg.Buf, '\0', 32);					//Clear msg-obj
   		memcpy (msg.Buf, Buf, len);					//Copy usb buffer to msg-obj
-  		osMessageQueuePut(MSGQ, &msg, 0U, 0U);		//Put object in queue
+  		osMessageQueuePut(MSGQ_Rx, &msg, 0U, 0U);		//Put object in queue
 
   		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);	//Toggle indicator LED, to show RTOS communication / interrupt possibilities.
 

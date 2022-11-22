@@ -66,7 +66,8 @@ const osThreadAttr_t Task_misc_attributes = {
 };
 /* USER CODE BEGIN PV */
 
-osMessageQueueId_t MSGQ;
+osMessageQueueId_t MSGQ_Rx;
+osMessageQueueId_t MSGQ_Tx;
 
 /* USER CODE END PV */
 
@@ -87,10 +88,14 @@ uint8_t buffer[32];			//Our own global Rx buffer. For use without msg queue
 
 int Init_MsgQueue (void) {
 
-  MSGQ = osMessageQueueNew(10, sizeof(MSGQ_obj), NULL);
-  if (MSGQ == NULL) {
+  MSGQ_Rx = osMessageQueueNew(10, sizeof(MSGQ_obj), NULL);
+  if (MSGQ_Rx == NULL) {
 	  return -1;
   }
+  MSGQ_Tx = osMessageQueueNew(10, sizeof(MSGQ_obj), NULL);
+    if (MSGQ_Tx == NULL) {
+  	  return -1;
+    }
   return 0;
 }
 /* USER CODE END 0 */
@@ -292,9 +297,9 @@ void StartTask_Tx(void *argument)
   for(;;)
   {
 
-	  if( MSGQ != NULL )
+	  if( MSGQ_Tx != NULL )
 		{
-			status = osMessageQueueGet(MSGQ, &msg, NULL, 0U);
+			status = osMessageQueueGet(MSGQ_Tx, &msg, NULL, 0U);
 			if (status == osOK)
 			{
 				CDC_Transmit_FS( /*(uint8_t *)*/ msg.Buf, sizeof(msg.Buf));		// Transmit what's been recieved in our msg queue
@@ -319,10 +324,30 @@ void StartTask_Tx(void *argument)
 void StartTask_Rx(void *argument)
 {
   /* USER CODE BEGIN StartTask_Rx */
+
+  MSGQ_obj msg;
+  osStatus status;
+  uint8_t i;
+
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+	  if( MSGQ_Rx != NULL )
+	  		{
+	  			status = osMessageQueueGet(MSGQ_Rx, &msg, NULL, 0U);
+	  			if (status == osOK)
+	  			{
+
+	  			for (i = 0; i < sizeof(msg.Buf); i++)
+					{
+						msg.Buf[i] = msg.Buf[i] + 1;					//		Dummy processing of message. Could be in any other task
+					}
+
+  				CDC_Transmit_FS( /*(uint8_t *)*/ msg.Buf, sizeof(msg.Buf));		// Transmit what's been received in our msg queue
+  					  memset(msg.Buf, 0, sizeof(msg.Buf));						// Set rx memory to 0 to stop repetitive sending.
+
+  			}
+	  		}
   }
   /* USER CODE END StartTask_Rx */
 }
