@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
+#include "MSGQ_obj.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,6 +43,13 @@
 
 /* Private variables ---------------------------------------------------------*/
 
+/* Definitions for Task_Tx */
+osThreadId_t Task_TxHandle;
+const osThreadAttr_t Task_Tx_attributes = {
+  .name = "Task_Tx",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 /* Definitions for Task_Rx */
 osThreadId_t Task_RxHandle;
 const osThreadAttr_t Task_Rx_attributes = {
@@ -49,14 +57,25 @@ const osThreadAttr_t Task_Rx_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for Task_misc */
+osThreadId_t Task_miscHandle;
+const osThreadAttr_t Task_misc_attributes = {
+  .name = "Task_misc",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 /* USER CODE BEGIN PV */
+
+osMessageQueueId_t MSGQ;
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+void StartTask_Tx(void *argument);
 void StartTask_Rx(void *argument);
+void StartTask_misc(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -64,7 +83,16 @@ void StartTask_Rx(void *argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t buffer[64];			//Our own global Rx buffer.
+uint8_t buffer[32];			//Our own global Rx buffer. For use without msg queue
+
+int Init_MsgQueue (void) {
+
+  MSGQ = osMessageQueueNew(10, sizeof(MSGQ_obj), NULL);
+  if (MSGQ == NULL) {
+	  return -1;
+  }
+  return 0;
+}
 /* USER CODE END 0 */
 
 /**
@@ -122,11 +150,19 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
+
+  Init_MsgQueue();
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
+  /* creation of Task_Tx */
+  Task_TxHandle = osThreadNew(StartTask_Tx, NULL, &Task_Tx_attributes);
+
   /* creation of Task_Rx */
   Task_RxHandle = osThreadNew(StartTask_Rx, NULL, &Task_Rx_attributes);
+
+  /* creation of Task_misc */
+  Task_miscHandle = osThreadNew(StartTask_misc, NULL, &Task_misc_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -237,27 +273,76 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartTask_Rx */
+/* USER CODE BEGIN Header_StartTask_Tx */
 /**
-  * @brief  Function implementing the Task_Rx thread.
+  * @brief  Function implementing the Task_Tx thread.
   * @param  argument: Not used
   * @retval None
   */
-/* USER CODE END Header_StartTask_Rx */
-void StartTask_Rx(void *argument)
+/* USER CODE END Header_StartTask_Tx */
+void StartTask_Tx(void *argument)
 {
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 5 */
+  MSGQ_obj msg;
+  osStatus status;
+
   /* Infinite loop */
   for(;;)
   {
 
-	  CDC_Transmit_FS((uint8_t *) buffer, sizeof(buffer));		//Transmit what's been recieved in our own buffer
-	  memset(buffer, 0, sizeof(buffer));						// Set rx memory to 0 to stop repetitive sending.
-	  osDelay(500);
+	  if( MSGQ != NULL )
+		{
+			status = osMessageQueueGet(MSGQ, &msg, NULL, 0U);
+			if (status == osOK)
+			{
+				CDC_Transmit_FS( /*(uint8_t *)*/ msg.Buf, sizeof(msg.Buf));		// Transmit what's been recieved in our msg queue
+					  memset(msg.Buf, 0, sizeof(msg.Buf));						// Set rx memory to 0 to stop repetitive sending.
+					  osDelay(500);
+			}
+
+		}
+
+
   }
   /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_StartTask_Rx */
+/**
+* @brief Function implementing the Task_Rx thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask_Rx */
+void StartTask_Rx(void *argument)
+{
+  /* USER CODE BEGIN StartTask_Rx */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartTask_Rx */
+}
+
+/* USER CODE BEGIN Header_StartTask_misc */
+/**
+* @brief Function implementing the Task_misc thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask_misc */
+void StartTask_misc(void *argument)
+{
+  /* USER CODE BEGIN StartTask_misc */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartTask_misc */
 }
 
 /**

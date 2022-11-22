@@ -23,6 +23,8 @@
 
 /* USER CODE BEGIN INCLUDE */
 
+#include "MSGQ_obj.h"			// Structs such as MSGQ_obj can't be external, so in header where needed instead.
+#include "cmsis_os2.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,7 +51,11 @@
   */
 
 /* USER CODE BEGIN PRIVATE_TYPES */
-extern uint8_t buffer[64];
+extern uint8_t buffer[64]; 		//Buffer for use without msg queue
+
+extern osMessageQueueId_t MSGQ;
+
+
 /* USER CODE END PRIVATE_TYPES */
 
 /**
@@ -261,13 +267,28 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
-  USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
+	MSGQ_obj msg;
+
+  USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);		//Default two lines of receive code.
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+
   uint8_t len = (uint8_t) *Len;
-  memset (buffer, '\0', 64);			//These 3 lines clear our own rx buffer, copies USB buffer to our own rx buffer
-  memcpy (buffer, Buf, len);			// and then clears the USB buffer.
-  memset (Buf, '\0', len);
-  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);	//Toggle indicator LED, to show RTOS communication / interrupt possibilities.
+  //memset (buffer, '\0', 64);			//These 3 lines clear our own rx buffer, copies USB buffer to our own rx buffer
+  //memcpy (buffer, Buf, len);			// and then clear the USB buffer.
+  //memset (Buf, '\0', len);
+
+  if( MSGQ != NULL )
+  	{
+	  	memset (msg.Buf, '\0', 32);					//Clear msg-obj
+  		memcpy (msg.Buf, Buf, len);					//Copy usb buffer to msg-obj
+  		osMessageQueuePut(MSGQ, &msg, 0U, 0U);		//Put object in queue
+
+  		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);	//Toggle indicator LED, to show RTOS communication / interrupt possibilities.
+
+  	}
+
+
+
   return (USBD_OK);
   /* USER CODE END 6 */
 }
