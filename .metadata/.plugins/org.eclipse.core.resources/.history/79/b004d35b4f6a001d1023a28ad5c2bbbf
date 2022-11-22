@@ -1,0 +1,11 @@
+#include "setup.h"
+
+
+int Init_MsgQueue (osMessageQueueId_t Q_name) {
+
+  Q_name = osMessageQueueNew(MSGQ_obj, sizeof(MSGQ_obj), NULL);
+  if (Q_name == NULL) {
+	  return -1;
+  }
+  return 0;
+}

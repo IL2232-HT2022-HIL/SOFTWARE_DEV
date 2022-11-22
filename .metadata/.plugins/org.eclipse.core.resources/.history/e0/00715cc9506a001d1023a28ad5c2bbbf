@@ -1,0 +1,7 @@
+#include "cmsis_os.h"
+
+struct MSGQ_obj;
+
+osMessageQueueId_t UART_get_Q;
+
+int Init_MsgQueue (osMessageQueueId_t Q_name);
