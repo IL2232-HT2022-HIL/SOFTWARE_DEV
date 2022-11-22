@@ -304,7 +304,7 @@ void StartTask_Tx(void *argument)
 			{
 				CDC_Transmit_FS( /*(uint8_t *)*/ msg.Buf, sizeof(msg.Buf));		// Transmit what's been recieved in our msg queue
 					  memset(msg.Buf, 0, sizeof(msg.Buf));						// Set rx memory to 0 to stop repetitive sending.
-					  osDelay(500);
+
 			}
 
 		}
