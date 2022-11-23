@@ -1,12 +1,13 @@
+
 import time
 import HiL_client_communication
-from HiL_config import CONTROLLER_OBJECTS, TIME_UNITS, ADC_RESOLUTION, DAC_RESOLUTION, DAC_REFERENCE, ADC_REFERENCE, DEBUG_L
+from HiL_config import *
 
 
-def HiL_client_POTEN_DAC(decimal_string):
+def HiL_client_DAC_conversion(decimal_string):
     
     decimal_value = float(decimal_string)
-    bit_value     = int(round(2**ADC_RESOLUTION*(decimal_value)/ADC_REFERENCE))
+    bit_value     = int ( round(2**ADC_RESOLUTION*(decimal_value)/ADC_REFERENCE) )
    
     int_upper = (bit_value >> 8) & 0xff
     int_lower =        bit_value & 0xff
@@ -18,6 +19,56 @@ def HiL_client_POTEN_DAC(decimal_string):
     return [int_lower,int_upper]
 
 
+def HiL_client_SHT20_humidity_conversion(decimal_string):
+
+	# RH = -6 + 125 * S_RH/(2**16)	
+
+	decimal_value = float(decimal_string)
+
+	bit_value = int ( round( (decimal_value + 6)*(2**16) / 125 ) )
+
+	int_upper = (bit_value >> 8) & 0xff
+	int_lower = bit_value & 0xff
+
+	if DEBUG_L:
+		print("Your value will be rounded.")
+		print(bit_value)
+
+	return [int_lower,int_upper]
+
+
+def HiL_client_SHT20_temperature_conversion(decimal_string):
+
+	# T = -46.85 + 175.72 * S_t/(2**16)
+	
+	decimal_value = float(decimal_string)
+	bit_value = int ( round( (decimal_value + 46.85)*(2**16) / 175.72 ) )
+
+	int_upper = (bit_value >> 8) & 0xff
+	int_lower = bit_value & 0xff
+
+	if DEBUG_L:
+		print("Your value will be rounded.")
+		print(bit_value)
+
+	return [int_lower,int_upper]
+
+
+def HiL_client_transaction(instrucion_string):
+
+	encoded_message = HiL_client_communication.HiL_client_communication_encode(instrucion_string)
+	HiL_client_communication.HiL_client_communication_transmit(encoded_message)
+	
+	recieved_message_array = HiL_client_communication.HiL_client_communication_receive()
+	transaction_status = HiL_client_communication.HiL_client_communication_decode(recieved_message_array)
+
+	if DEBUG_L:
+		print(instrucion_string)
+		print(encoded_message)
+
+	return transaction_status
+
+
 def HiL_client_status_instruction():
 	#to be filled as a setup function
 	pass
@@ -26,21 +77,13 @@ def HiL_client_status_instruction():
 def HiL_client_turn_on_instruction(binary_object):
 
 	python_instruction = "CONTROLLER_REQUEST_ACTUATE " + binary_object + " ON"
-	encoded_message = HiL_client_communication.HiL_client_communication_encode(python_instruction)
-	
-	if DEBUG_L:
-		print(python_instruction)
-		print(encoded_message)
+	return HiL_client_transaction(python_instruction)
 
 
 def HiL_client_turn_off_instruction(binary_object):
 
 	python_instruction = "CONTROLLER_REQUEST_ACTUATE " + binary_object + " OFF"
-	encoded_message = HiL_client_communication.HiL_client_communication_encode(python_instruction)
-
-	if DEBUG_L:
-		print(python_instruction)
-		print(encoded_message)
+	return HiL_client_transaction(python_instruction)
 
 
 def HiL_client_push_instruction(string_list):
@@ -49,56 +92,54 @@ def HiL_client_push_instruction(string_list):
 	wait_time     = int (string_list[2])
 	time_unit     = string_list[3]
 
+	transaction_status = HiL_client_turn_on_instruction(binary_object)
 
-	HiL_client_turn_on_instruction(binary_object)
+	if transaction_status is not OK:
+		return transaction_status # something bad happened, return error code
 
-	
+
 	print("Pushing {} for {} {}...".format(binary_object, wait_time, time_unit))
 	sleep_time = wait_time / (TIME_UNITS[time_unit])
 	time.sleep(sleep_time)
 
 
-	HiL_client_turn_off_instruction(binary_object)
+	transaction_status = HiL_client_turn_off_instruction(binary_object)
+	return transaction_status
 
 
 def HiL_client_tune_instruction(string_list):
 
 	controller_object = string_list[0]
 	decimal_value     = float(string_list[2])
-	split_integer     = [str(i) for i in HiL_client_POTEN_DAC(decimal_value)]
+	split_integer     = [str(i) for i in HiL_client_DAC_conversion(decimal_value)]
 
-	python_instruction = "CONTROLLER_REQUEST_POTEN {} {} {}".format(controller_object,split_integer[0],split_integer[1])
-	encoded_message = HiL_client_communication.HiL_client_communication_encode(python_instruction)
-
-	if DEBUG_L:
-		print(python_instruction)
-		print(encoded_message)
+	python_instruction = "CONTROLLER_REQUEST_POTENTIOMETER {} {} {}".format(controller_object,split_integer[0],split_integer[1])
+	return HiL_client_transaction(python_instruction)
 
 
-def HiL_client_set_temp_instruction(string_list):
+def HiL_client_set_temperature_instruction(string_list):
 
-	python_instruction = "CONTROLLER_REQUEST_SHT20 {} {}".format(string_list[0], string_list[2])
-	encoded_message = HiL_client_communication.HiL_client_communication_encode(python_instruction)
+	controller_object = string_list[1]
+	decimal_value     = float(string_list[3])
+	split_integer     = [str(i) for i in HiL_client_SHT20_temperature_conversion(decimal_value)]
 
-	if DEBUG_L:
-		print(python_instruction)
-		print(encoded_message)
+	python_instruction = "CONTROLLER_REQUEST_SHT20 {} {} {}".format(controller_object,split_integer[0],split_integer[1])
+	return HiL_client_transaction(python_instruction)
 
 
-def HiL_client_set_humi_instruction(string_list):
+def HiL_client_set_humidity_instruction(string_list):
 
-	python_instruction = "CONTROLLER_REQUEST_SHT20 {} {}".format(string_list[0], string_list[2])
-	encoded_message = HiL_client_communication.HiL_client_communication_encode(python_instruction)
+	controller_object = string_list[1]
+	decimal_value     = float(string_list[3])
+	split_integer     = [str(i) for i in HiL_client_SHT20_humidity_conversion(decimal_value)]
+
+	python_instruction = "CONTROLLER_REQUEST_SHT20 {} {} {}".format(controller_object,split_integer[0],split_integer[1])
+	return HiL_client_transaction(python_instruction)
+
+
+def HiL_client_check_if_instruction(string_list):
+
+	object_group = CONTROLLER_OBJECTS[string_list[0]].object_get_group
 	
-	if DEBUG_L:
-		print(python_instruction)
-		print(encoded_message)
-	
-
-def template_instruction():
-	#is left for adding any other keywords
-	raise Exception("THIS FUNCTION IS NOT YET IMPLEMENTED")
-
-# The following codes are just for debuging this file
-if __name__=="__main__":
-	pass
+	python_instruction = "CONTROLLER_REQUEST_GET {} {}".format(object_group,string_list[0])
+	return HiL_client_transaction(python_instruction)
