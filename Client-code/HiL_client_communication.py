@@ -38,8 +38,8 @@ def HiL_client_communication_transmit(encoded_message):
     try:
         to_be_sent = bytes(encoded_message)
 
-        ser.write(to_be_sent)
-        print("send message:")
+        #print(ser.write(to_be_sent))
+        print("send message: {}".format(to_be_sent))
     
     except Exception as exc:
         print("error", exc)
@@ -49,14 +49,17 @@ def HiL_client_communication_transmit(encoded_message):
 def HiL_client_communication_receive():
     try:
         print("waiting for receive message")
-        time.sleep(1)
         #while True:
-        data = ser.read(ser.in_waiting).decode('gbk')
+        data = ser.read(ser.in_waiting)
+        print(data)
+
         if data != '':
              for char_index in range(len(data)):
                #if str(data[char_index] )in InputStr :
                if data[char_index]!="\x00":
                 print("message received:", data[char_index])
+        
+
         if data=='break':
             IsOpen=False
             print("serial port closed")
@@ -104,8 +107,8 @@ def HiL_client_communication_decode(recieved_message_array):
 if __name__ == '__main__':
     open_ser()  # open serial port
     while IsOpen:
-        time.sleep(2)
         HiL_client_communication_transmit([65,65,65,65])  # send message
+        time.sleep(0.1)
         HiL_client_communication_receive()  # receive message
         #close_ser()  # close serial port
 
