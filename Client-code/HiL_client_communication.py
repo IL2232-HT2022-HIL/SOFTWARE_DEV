@@ -1,21 +1,20 @@
 
-#from HiL_config import CONTROLLER_REQUEST, CONTROLLER_OBJECTS, CONTROLLER_ACTIONS
+from HiL_config import CONTROLLER_REQUEST, CONTROLLER_OBJECTS, CONTROLLER_ACTIONS
 
 import time
 import serial
 IsOpen=True;
-InputStr=""
-
 
 # open serial port
 def open_ser():
-    port = 'com6'
+    port = 'COM6'
     baudrate = 115200
     try:
         global ser
         ser = serial.Serial(port, baudrate, timeout=0.5)
         if (ser.isOpen() == True):
             print("serial port opened")
+    
     except Exception as exc:
         print("Serial port open exception", exc)
 
@@ -32,42 +31,26 @@ def close_ser():
         print("Serial port closing exception", exc)
 
 
-# send massages
+# send messages
 def HiL_client_communication_transmit(encoded_message):
     
     try:
-        to_be_sent = bytes(encoded_message)
-
-        #print(ser.write(to_be_sent))
-        print("send message: {}".format(to_be_sent))
-    
+        ser.write(bytes(encoded_message))
+        
     except Exception as exc:
         print("error", exc)
-
 
 # receive messages
 def HiL_client_communication_receive():
     try:
-        print("waiting for receive message")
-        #while True:
-        data = ser.read(ser.in_waiting)
-        print(data)
-
-        if data != '':
-             for char_index in range(len(data)):
-               #if str(data[char_index] )in InputStr :
-               if data[char_index]!="\x00":
-                print("message received:", data[char_index])
+        data = list(ser.read(ser.in_waiting))
+        return data[0:4:]
         
-
-        if data=='break':
-            IsOpen=False
-            print("serial port closed")
-            close_ser()
     except Exception as exc:
         print("receive error", exc)
 
-'''
+
+
 def HiL_client_communication_encode(message):
     
     string_list = message.split(" ")
@@ -95,7 +78,7 @@ def HiL_client_communication_encode(message):
     
     return [controller_request, controller_object, controller_action1, controller_action2]
 
-'''
+
 def HiL_client_communication_decode(recieved_message_array):
 
     value1 = recieved_message_array[0] #LSB
@@ -103,14 +86,14 @@ def HiL_client_communication_decode(recieved_message_array):
 
     return (value2 << 8) + value1
 
-
 if __name__ == '__main__':
     open_ser()  # open serial port
     while IsOpen:
         HiL_client_communication_transmit([65,65,65,65])  # send message
         time.sleep(0.1)
-        HiL_client_communication_receive()  # receive message
-        #close_ser()  # close serial port
+        print(HiL_client_communication_receive())  # receive message
+        time.sleep(2)
+        
 
 
 
