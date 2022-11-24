@@ -1,6 +1,69 @@
 
 from HiL_config import CONTROLLER_REQUEST, CONTROLLER_OBJECTS, CONTROLLER_ACTIONS
 
+import time
+import serial
+IsOpen=True;
+InputStr=""
+
+
+# open serial port
+def open_ser():
+    port = 'com3'
+    baudrate = 115200
+    try:
+        global ser
+        ser = serial.Serial(port, baudrate, timeout=0.5)
+        if (ser.isOpen() == True):
+            print("serial port opened")
+    except Exception as exc:
+        print("Serial port open exception", exc)
+
+
+# close serial port
+def close_ser():
+    try:
+        ser.close()
+        if ser.isOpen():
+            print("")
+        else:
+            print("Serial port is closed")
+    except Exception as exc:
+        print("Serial port closing exception", exc)
+
+
+# send massages
+def HiL_client_communication_transmit(encoded_message):
+    
+    try:
+        InputStr=encoded_message.encode("utf-8")
+        ser.write(encoded_message.encode("utf-8"))
+        print("send message:", encoded_message)
+    
+    except Exception as exc:
+        print("error", exc)
+
+
+# receive messages
+def HiL_client_communication_receive():
+    try:
+        print("waiting for receive message")
+        time.sleep(1)
+        #while True:
+        data = ser.read(ser.in_waiting).decode('gbk')
+        if data != '':
+             for char_index in range(len(data)):
+               #if str(data[char_index] )in InputStr :
+               if data[char_index]!="\x00":
+                print("message received:", data[char_index])
+        if data=='break':
+            IsOpen=False
+            print("serial port closed")
+            close_ser()
+    except Exception as exc:
+        print("receive error", exc)
+
+
 def HiL_client_communication_encode(message):
     
     string_list = message.split(" ")
@@ -37,12 +100,21 @@ def HiL_client_communication_decode(recieved_message_array):
     return (value2 << 8) + value1
 
 
-def HiL_client_communication_transmit(encoded_message): # TO BE IMPLEMENTED
-    pass
+if __name__ == '__main__':
+    open_ser()  # open serial port
+    while IsOpen:
+        HiL_client_communication_transmit("ok")  # send message
+        HiL_client_communication_receive()  # receive message
+        #close_ser()  # close serial port
 
 
-def HiL_client_communication_receive(): # TO BE IMPLEMENTED
-    return [0,0]
+
+
+
+
+
+
+
 
 
 
