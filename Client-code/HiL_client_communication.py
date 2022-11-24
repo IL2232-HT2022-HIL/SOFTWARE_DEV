@@ -1,5 +1,5 @@
 
-from HiL_config import CONTROLLER_REQUEST, CONTROLLER_OBJECTS, CONTROLLER_ACTIONS
+#from HiL_config import CONTROLLER_REQUEST, CONTROLLER_OBJECTS, CONTROLLER_ACTIONS
 
 import time
 import serial
@@ -36,9 +36,10 @@ def close_ser():
 def HiL_client_communication_transmit(encoded_message):
     
     try:
-        InputStr=encoded_message.encode("utf-8")
-        ser.write(encoded_message.encode("utf-8"))
-        print("send message:", encoded_message)
+        to_be_sent = bytes(encoded_message)
+
+        ser.write(to_be_sent)
+        print("send message:")
     
     except Exception as exc:
         print("error", exc)
@@ -103,9 +104,9 @@ def HiL_client_communication_decode(recieved_message_array):
 if __name__ == '__main__':
     open_ser()  # open serial port
     while IsOpen:
-        HiL_client_communication_transmit([0,0,0,0])  # send message
+        time.sleep(2)
+        HiL_client_communication_transmit([65,65,65,65])  # send message
         HiL_client_communication_receive()  # receive message
-        time.sleep(1)
         #close_ser()  # close serial port
 
 
