@@ -84,7 +84,6 @@ void StartTask_misc(void *argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t buffer[32];			//Our own global Rx buffer. For use without msg queue
 
 int Init_MsgQueue (void) {
 
@@ -343,8 +342,11 @@ void StartTask_Rx(void *argument)
 						msg.Buf[i] = msg.Buf[i] + 1;					//		Dummy processing of message. Could be in any other task
 					}
 
-  				CDC_Transmit_FS( /*(uint8_t *)*/ msg.Buf, sizeof(msg.Buf));		// Transmit what's been received in our msg queue
-  					  memset(msg.Buf, 0, sizeof(msg.Buf));						// Set rx memory to 0 to stop repetitive sending.
+				  if( MSGQ_Tx != NULL )
+					{
+						osMessageQueuePut(MSGQ_Tx, &msg, 0U, 0U);		//Put object in queue
+
+					}
 
   			}
 	  		}

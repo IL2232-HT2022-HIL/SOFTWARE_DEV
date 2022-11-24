@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 0000002e  00000000  00000000  00020174  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0002208c  00000000  00000000  000201a2  2**0
+ 12 .debug_info   000220b9  00000000  00000000  000201a2  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00004a56  00000000  00000000  0004222e  2**0
+ 13 .debug_abbrev 00004a5b  00000000  00000000  0004225b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00001990  00000000  00000000  00046c88  2**3
+ 14 .debug_aranges 00001990  00000000  00000000  00046cb8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00001788  00000000  00000000  00048618  2**3
+ 15 .debug_ranges 00001788  00000000  00000000  00048648  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00006b1b  00000000  00000000  00049da0  2**0
+ 16 .debug_macro  00006b1b  00000000  00000000  00049dd0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0001f22c  00000000  00000000  000508bb  2**0
+ 17 .debug_line   0001f231  00000000  00000000  000508eb  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00104b94  00000000  00000000  0006fae7  2**0
+ 18 .debug_str    00104b94  00000000  00000000  0006fb1c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  0017467b  2**0
+ 19 .comment      00000050  00000000  00000000  001746b0  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00006d90  00000000  00000000  001746cc  2**2
+ 20 .debug_frame  00006d90  00000000  00000000  00174700  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -982,13 +982,13 @@ void StartTask_Rx(void *argument)
   for(;;)
   {
 	  if( MSGQ_Rx != NULL )
- 80008ac:	4b1c      	ldr	r3, [pc, #112]	; (8000920 <StartTask_Rx+0x7c>)
+ 80008ac:	4b1b      	ldr	r3, [pc, #108]	; (800091c <StartTask_Rx+0x78>)
  80008ae:	681b      	ldr	r3, [r3, #0]
  80008b0:	2b00      	cmp	r3, #0
  80008b2:	d0fb      	beq.n	80008ac <StartTask_Rx+0x8>
 	  		{
 	  			status = osMessageQueueGet(MSGQ_Rx, &msg, NULL, 0U);
- 80008b4:	4b1a      	ldr	r3, [pc, #104]	; (8000920 <StartTask_Rx+0x7c>)
+ 80008b4:	4b19      	ldr	r3, [pc, #100]	; (800091c <StartTask_Rx+0x78>)
  80008b6:	6818      	ldr	r0, [r3, #0]
  80008b8:	f107 0108 	add.w	r1, r7, #8
  80008bc:	2300      	movs	r3, #0
@@ -1026,21 +1026,23 @@ void StartTask_Rx(void *argument)
  8000900:	d9e8      	bls.n	80008d4 <StartTask_Rx+0x30>
 					}
 
-  				CDC_Transmit_FS( /*(uint8_t *)*/ msg.Buf, sizeof(msg.Buf));		// Transmit what's been received in our msg queue
- 8000902:	f107 0308 	add.w	r3, r7, #8
- 8000906:	2120      	movs	r1, #32
- 8000908:	4618      	mov	r0, r3
- 800090a:	f00a f8db 	bl	800aac4 <CDC_Transmit_FS>
-  					  memset(msg.Buf, 0, sizeof(msg.Buf));						// Set rx memory to 0 to stop repetitive sending.
- 800090e:	f107 0308 	add.w	r3, r7, #8
- 8000912:	2220      	movs	r2, #32
- 8000914:	2100      	movs	r1, #0
- 8000916:	4618      	mov	r0, r3
- 8000918:	f00a fde6 	bl	800b4e8 <memset>
+				  if( MSGQ_Tx != NULL )
+ 8000902:	4b07      	ldr	r3, [pc, #28]	; (8000920 <StartTask_Rx+0x7c>)
+ 8000904:	681b      	ldr	r3, [r3, #0]
+ 8000906:	2b00      	cmp	r3, #0
+ 8000908:	d0d0      	beq.n	80008ac <StartTask_Rx+0x8>
+					{
+						osMessageQueuePut(MSGQ_Tx, &msg, 0U, 0U);		//Put object in queue
+ 800090a:	4b05      	ldr	r3, [pc, #20]	; (8000920 <StartTask_Rx+0x7c>)
+ 800090c:	6818      	ldr	r0, [r3, #0]
+ 800090e:	f107 0108 	add.w	r1, r7, #8
+ 8000912:	2300      	movs	r3, #0
+ 8000914:	2200      	movs	r2, #0
+ 8000916:	f007 f98d 	bl	8007c34 <osMessageQueuePut>
 	  if( MSGQ_Rx != NULL )
- 800091c:	e7c6      	b.n	80008ac <StartTask_Rx+0x8>
- 800091e:	bf00      	nop
- 8000920:	2000019c 	.word	0x2000019c
+ 800091a:	e7c7      	b.n	80008ac <StartTask_Rx+0x8>
+ 800091c:	2000019c 	.word	0x2000019c
+ 8000920:	200001a0 	.word	0x200001a0
 
 08000924 <StartTask_misc>:
 * @param argument: Not used
