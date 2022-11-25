@@ -27,6 +27,14 @@ BINARY_VALUES = {
 }
 
 #-----------------------------
+#FOR USB COMMUNICATION:
+
+COM_PORT      = "COM6"
+USB_BAUD_RATE = 115200
+
+
+
+#-----------------------------
 
 class ControllerObjectClass():
 	def __init__(self, object_value, object_group):

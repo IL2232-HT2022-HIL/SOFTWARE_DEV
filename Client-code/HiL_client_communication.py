@@ -1,54 +1,54 @@
 
-from HiL_config import CONTROLLER_REQUEST, CONTROLLER_OBJECTS, CONTROLLER_ACTIONS
+from HiL_config import CONTROLLER_REQUEST, CONTROLLER_OBJECTS, CONTROLLER_ACTIONS #FOR ENCODING
+from HiL_config import COM_PORT, USB_BAUD_RATE                                    #FOR USB
 
 import time
 import serial
-IsOpen=True;
-
-# open serial port
-def open_ser():
-    port = 'COM6'
-    baudrate = 115200
-    try:
-        global ser
-        ser = serial.Serial(port, baudrate, timeout=0.5)
-        if (ser.isOpen() == True):
-            print("serial port opened")
-    
-    except Exception as exc:
-        print("Serial port open exception", exc)
 
 
-# close serial port
-def close_ser():
-    try:
-        ser.close()
-        if ser.isOpen():
-            print("")
-        else:
-            print("Serial port is closed")
-    except Exception as exc:
-        print("Serial port closing exception", exc)
+def HiL_client_communication_serial_port(enable):
 
+
+    if (enable):
+
+        try:
+            global HiL_serial_link
+            HiL_serial_link = serial.Serial(COM_PORT, USB_BAUD_RATE, timeout=0.5)
+            if HiL_serial_link.isOpen():
+                print("serial port opened")
+            
+        except Exception as exc:
+            raise
+
+    else:
+        
+        try:
+            HiL_serial_link.close()
+            if not HiL_serial_link.isOpen():
+                print("Serial port is closed")
+        
+        except Exception as exc:
+            raise
 
 # send messages
 def HiL_client_communication_transmit(encoded_message):
     
     try:
-        ser.write(bytes(encoded_message))
+        HiL_serial_link.reset_input_buffer()
+        HiL_serial_link.write(bytes(encoded_message))
         
     except Exception as exc:
-        print("error", exc)
+        raise
 
 # receive messages
 def HiL_client_communication_receive():
+    
     try:
-        data = list(ser.read(ser.in_waiting))
-        return data[0:4:]
+        recieved_message_array = list(HiL_serial_link.read(HiL_serial_link.in_waiting))
+        return recieved_message_array[0:2:]
         
     except Exception as exc:
-        print("receive error", exc)
-
+        raise
 
 
 def HiL_client_communication_encode(message):
@@ -58,7 +58,7 @@ def HiL_client_communication_encode(message):
     controller_request = CONTROLLER_REQUEST[string_list[0]]
     controller_object  = CONTROLLER_OBJECTS[string_list[1]].object_value
 
-    if string_list[2] in CONTROLLER_ACTIONS:
+    if   string_list[2] in CONTROLLER_ACTIONS:
         controller_action1 = CONTROLLER_ACTIONS[string_list[2]]
 
     elif string_list[2] in CONTROLLER_OBJECTS:
@@ -86,24 +86,9 @@ def HiL_client_communication_decode(recieved_message_array):
 
     return (value2 << 8) + value1
 
+
 if __name__ == '__main__':
-    open_ser()  # open serial port
-    while IsOpen:
-        HiL_client_communication_transmit([65,65,65,65])  # send message
-        time.sleep(0.1)
-        print(HiL_client_communication_receive())  # receive message
-        time.sleep(2)
+    pass
         
-
-
-
-
-
-
-
-
-
-
-
 
 
