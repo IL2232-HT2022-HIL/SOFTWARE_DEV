@@ -31,7 +31,8 @@ int HiL_mcu_commands_binary_action (int binary_object, int desired_state)
 	{
 
 		case HiL_SW5:
-			HAL_GPIO_WritePin(HiL_SW5_GPIO_Port, HiL_SW5_Pin, pin_state);
+			//HAL_GPIO_WritePin(HiL_SW5_GPIO_Port, HiL_SW5_Pin, pin_state);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, pin_state);
 			break;
 
 		case HiL_SW6:

@@ -826,10 +826,28 @@ void StartTask_controller(void *argument)
 {
   /* USER CODE BEGIN StartTask_controller */
   /* Infinite loop */
+  MSGQ_obj msg;
+  osStatus status;
+  int recieve_message[4];
+
+  /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
-  }
+	  if( USB_MSGQ_Rx != NULL )
+	  {
+			status = osMessageQueueGet(USB_MSGQ_Rx, &msg, NULL, 0U);
+			if (status == osOK && sizeof(msg.Buf) == 4 )
+			{
+				for (int i = 0; i < sizeof(msg.Buf); i++)
+				{
+					recieve_message[i] = msg.Buf[i];					//		Dummy processing of message. Could be in any other task
+				}
+
+				HiL_controller_read_message(recieve_message);
+			}
+	  }
+
+	  osDelay(1);
   /* USER CODE END StartTask_controller */
 }
 
