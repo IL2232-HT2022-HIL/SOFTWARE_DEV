@@ -1,13 +1,19 @@
 
 import HiL_client
-import HiL_client_communication
 from HiL_config import CONTROLLER_OBJECTS, CONTROLLER_GET_GROUPS, BINARY_OBJECTS, POT_OBJECTS, SHT20_OBJECTS, TIME_UNITS
+
+import time
 
 #The methods are called from the robot framework file, and the instruction functions will handle the method call
 class RobotFrameworkLib():
 
-	def run_status(self):
-		HiL_client.HiL_client_status_instruction() #diagnostics
+	def open_server(self):
+		HiL_client.HiL_client_setup_server_instruction(enable=True)
+		time.sleep(2)
+
+
+	def close_server(self):
+		HiL_client.HiL_client_setup_server_instruction(enable=False)
 
 
 	def turn_on (self,instruction):
@@ -246,5 +252,7 @@ class RobotFrameworkLib():
 # The following codes are just for debuging this file
 obj = RobotFrameworkLib()
 if __name__=="__main__":
-	
-	obj.set_humidity("of HUMI_SENSOR to 0")
+
+	obj.open_server()
+	obj.turn_on("SW5")
+	obj.close_server()

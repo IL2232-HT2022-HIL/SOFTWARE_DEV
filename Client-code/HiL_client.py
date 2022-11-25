@@ -59,6 +59,8 @@ def HiL_client_transaction(instrucion_string):
 	encoded_message = HiL_client_communication.HiL_client_communication_encode(instrucion_string)
 	HiL_client_communication.HiL_client_communication_transmit(encoded_message)
 	
+	time.sleep(2)
+
 	recieved_message_array = HiL_client_communication.HiL_client_communication_receive()
 	transaction_status = HiL_client_communication.HiL_client_communication_decode(recieved_message_array)
 
@@ -69,9 +71,8 @@ def HiL_client_transaction(instrucion_string):
 	return transaction_status
 
 
-def HiL_client_status_instruction():
-	#to be filled as a setup function
-	pass
+def HiL_client_setup_server_instruction(enable):
+	HiL_client_communication.HiL_client_communication_serial_port(enable)
 
 
 def HiL_client_turn_on_instruction(binary_object):
@@ -143,3 +144,4 @@ def HiL_client_check_if_instruction(string_list):
 	
 	python_instruction = "CONTROLLER_REQUEST_GET {} {}".format(object_group,string_list[0])
 	return HiL_client_transaction(python_instruction)
+
