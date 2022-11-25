@@ -24,7 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "../../HiL_code/Inc/HiL_code.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -83,7 +83,37 @@ const osThreadAttr_t defaultTask_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for Task_gateway */
+osThreadId_t Task_gatewayHandle;
+const osThreadAttr_t Task_gateway_attributes = {
+  .name = "Task_gateway",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for Task_controller */
+osThreadId_t Task_controllerHandle;
+const osThreadAttr_t Task_controller_attributes = {
+  .name = "Task_controller",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for Task_SHT20 */
+osThreadId_t Task_SHT20Handle;
+const osThreadAttr_t Task_SHT20_attributes = {
+  .name = "Task_SHT20",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for Task_74HC595D */
+osThreadId_t Task_74HC595DHandle;
+const osThreadAttr_t Task_74HC595D_attributes = {
+  .name = "Task_74HC595D",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 /* USER CODE BEGIN PV */
+osMessageQueueId_t MSGQ_Rx;
+osMessageQueueId_t MSGQ_Tx;
 
 /* USER CODE END PV */
 
@@ -99,6 +129,10 @@ static void MX_SPI3_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_UART7_Init(void);
 void StartDefaultTask(void *argument);
+void StartTask_gateway(void *argument);
+void StartTask_controller(void *argument);
+void StartTask_SHT20(void *argument);
+void StartTask_74HC595D(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -106,6 +140,8 @@ void StartDefaultTask(void *argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+
 
 /* USER CODE END 0 */
 
@@ -172,11 +208,26 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
+
+  Init_MsgQueue();
+
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+
+  /* creation of Task_gateway */
+  Task_gatewayHandle = osThreadNew(StartTask_gateway, NULL, &Task_gateway_attributes);
+
+  /* creation of Task_controller */
+  Task_controllerHandle = osThreadNew(StartTask_controller, NULL, &Task_controller_attributes);
+
+  /* creation of Task_SHT20 */
+  Task_SHT20Handle = osThreadNew(StartTask_SHT20, NULL, &Task_SHT20_attributes);
+
+  /* creation of Task_74HC595D */
+  Task_74HC595DHandle = osThreadNew(StartTask_74HC595D, NULL, &Task_74HC595D_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -743,6 +794,78 @@ void StartDefaultTask(void *argument)
     osDelay(1);
   }
   /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_StartTask_gateway */
+/**
+* @brief Function implementing the Task_gateway thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask_gateway */
+void StartTask_gateway(void *argument)
+{
+  /* USER CODE BEGIN StartTask_gateway */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartTask_gateway */
+}
+
+/* USER CODE BEGIN Header_StartTask_controller */
+/**
+* @brief Function implementing the Task_controller thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask_controller */
+void StartTask_controller(void *argument)
+{
+  /* USER CODE BEGIN StartTask_controller */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartTask_controller */
+}
+
+/* USER CODE BEGIN Header_StartTask_SHT20 */
+/**
+* @brief Function implementing the Task_SHT20 thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask_SHT20 */
+void StartTask_SHT20(void *argument)
+{
+  /* USER CODE BEGIN StartTask_SHT20 */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartTask_SHT20 */
+}
+
+/* USER CODE BEGIN Header_StartTask_74HC595D */
+/**
+* @brief Function implementing the Task_74HC595D thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask_74HC595D */
+void StartTask_74HC595D(void *argument)
+{
+  /* USER CODE BEGIN StartTask_74HC595D */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartTask_74HC595D */
 }
 
 /**
