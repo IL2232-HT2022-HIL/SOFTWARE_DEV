@@ -1,2 +1,2 @@
 ../HiL_code/Src/HiL_mcu_commands.c:12:5:HiL_mcu_commands_binary_action	24	static
-../HiL_code/Src/HiL_mcu_commands.c:94:5:HiL_mcu_commands_binary_status	16	static
+../HiL_code/Src/HiL_mcu_commands.c:95:5:HiL_mcu_commands_binary_status	16	static

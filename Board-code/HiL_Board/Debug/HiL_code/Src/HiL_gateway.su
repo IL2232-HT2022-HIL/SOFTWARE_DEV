@@ -1,2 +1,1 @@
-../HiL_code/Src/HiL_gateway.c:14:8:HiL_gateway_get_message	4	static
-../HiL_code/Src/HiL_gateway.c:19:6:HiL_gateway_transmit_message	16	static
+../HiL_code/Src/HiL_gateway.c:11:6:HiL_gateway_transmit_message	16	static

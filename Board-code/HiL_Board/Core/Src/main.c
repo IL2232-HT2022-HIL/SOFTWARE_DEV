@@ -26,6 +26,9 @@
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
 #include "HiL_MSGQ_obj.h"
+#include "HiL_controller.h"
+#include "HiL_Init_MSGQ.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -847,7 +850,9 @@ void StartTask_controller(void *argument)
 			}
 	  }
 
+
 	  osDelay(1);
+  }
   /* USER CODE END StartTask_controller */
 }
 
