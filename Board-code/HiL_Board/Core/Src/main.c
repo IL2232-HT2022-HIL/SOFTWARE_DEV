@@ -24,7 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "../../HiL_code/Inc/HiL_code.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
