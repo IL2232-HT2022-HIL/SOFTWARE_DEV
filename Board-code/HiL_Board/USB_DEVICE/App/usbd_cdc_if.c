@@ -23,6 +23,8 @@
 
 /* USER CODE BEGIN INCLUDE */
 
+#include "HiL_MSGQ_obj.h"			// Structs such as MSGQ_obj can't be external, so in header where needed instead.
+#include "cmsis_os2.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,6 +51,8 @@
   */
 
 /* USER CODE BEGIN PRIVATE_TYPES */
+
+extern osMessageQueueId_t USB_MSGQ_Rx;
 
 /* USER CODE END PRIVATE_TYPES */
 
@@ -261,8 +265,21 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
-  USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
+	MSGQ_obj msg;										//Local message object
+
+  USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);			//Default two lines of receive code.
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+
+  uint8_t len = (uint8_t) *Len;
+
+  if( USB_MSGQ_Rx != NULL )
+  	{
+	  	memset (msg.Buf, '\0', 32);						//Clear msg-obj
+  		memcpy (msg.Buf, Buf, len);						//Copy usb buffer to msg-obj
+  		osMessageQueuePut(USB_MSGQ_Rx, &msg, 0U, 0U);	//Put object in queue, no timeout.
+
+  	}
+
   return (USBD_OK);
   /* USER CODE END 6 */
 }

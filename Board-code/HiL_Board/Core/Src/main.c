@@ -24,7 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "usbd_cdc_if.h"
+#include "HiL_MSGQ_obj.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -112,8 +113,8 @@ const osThreadAttr_t Task_74HC595D_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */
-osMessageQueueId_t MSGQ_Rx;
-osMessageQueueId_t MSGQ_Tx;
+osMessageQueueId_t USB_MSGQ_Rx;
+osMessageQueueId_t USB_MSGQ_Tx;
 
 /* USER CODE END PV */
 
@@ -209,7 +210,7 @@ int main(void)
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
 
-  Init_MsgQueue();
+  HiL_Init_MSGQ();
 
   /* USER CODE END RTOS_QUEUES */
 

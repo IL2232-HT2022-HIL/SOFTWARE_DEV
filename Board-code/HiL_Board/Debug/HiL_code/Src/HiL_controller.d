@@ -1,5 +1,5 @@
 HiL_code/Src/HiL_controller.o: ../HiL_code/Src/HiL_controller.c \
- /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_controller.h \
+ C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_controller.h \
  ../Core/Inc/main.h ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
  ../Core/Inc/stm32f7xx_hal_conf.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h \
@@ -39,10 +39,10 @@ HiL_code/Src/HiL_controller.o: ../HiL_code/Src/HiL_controller.c \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_ll_usb.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd_ex.h \
- /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_config.h \
- /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_gateway.h \
- /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h
-/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_controller.h:
+ C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_config.h \
+ C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_gateway.h \
+ C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h
+C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_controller.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
 ../Core/Inc/stm32f7xx_hal_conf.h:
@@ -83,6 +83,6 @@ HiL_code/Src/HiL_controller.o: ../HiL_code/Src/HiL_controller.c \
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_ll_usb.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd_ex.h:
-/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_config.h:
-/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_gateway.h:
-/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h:
+C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_config.h:
+C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_gateway.h:
+C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h:
