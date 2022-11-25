@@ -13,8 +13,6 @@
 #include <stdio.h>
 
 
-int *  HiL_gateway_get_message();
-
 void   HiL_gateway_transmit_message(int value1, int value2);
 
 

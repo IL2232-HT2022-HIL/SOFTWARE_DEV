@@ -7,7 +7,7 @@
 
 #include "HiL_controller.h"
 
-int recieved_data[8];
+int recieved_data[4];
 int controller_reply[2];
 
 
@@ -20,14 +20,14 @@ void HiL_controller_copy_array(int* to_be_copied)
 }
 
 //parses message, and tries to execute commands.
-void HiL_controller_read_message()
+void HiL_controller_read_message(int* recieved_data)
 {
 	//reset status array
 	controller_reply[CONTROLLER_VALUE1] = 0;
 	controller_reply[CONTROLLER_VALUE2] = 0;
 
 	// gets newest instruction
-	HiL_controller_copy_array(HiL_gateway_get_message());
+	HiL_controller_copy_array(recieved_data);
 
 	// identify the message content
 	switch(recieved_data[CONTROLLER_REQUEST])

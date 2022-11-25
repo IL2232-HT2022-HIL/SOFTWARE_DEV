@@ -26,7 +26,7 @@
 #include "HiL_mcu_commands.h"
 
 //parses message, and tries to execute commands.
-void HiL_controller_read_message();
+void HiL_controller_read_message(int* recieved_data);
 
 // Function send message to gateway
 void HiL_controller_send_message();
