@@ -72,6 +72,7 @@ I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi3;
+DMA_HandleTypeDef hdma_spi1_rx;
 
 TIM_HandleTypeDef htim1;
 
@@ -126,38 +127,56 @@ static void MX_SPI1_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_UART7_Init(void);
+static void MX_DMA_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 void StartDefaultTask(void *argument);
 void StartShiftRegLightOn(void *argument);
 
 /* USER CODE BEGIN PFP */
 
-void DMA_Ready_Func(DMA_HandleTypeDef *hdma){
-	printf("DMA_Ready_func got a call, error = %ld\r\n", hdma->ErrorCode);
+//void SPI_DMAReceiveCplt	(DMA_HandleTypeDef *hdma){
+
+//}
+
+void DMA_Done_Func(DMA_HandleTypeDef *hdma){
+	printf("DMA_Done_func got a call, error = %ld\r\n", hdma->ErrorCode);
+
+}
+
+void DMA_Abort_Func(DMA_HandleTypeDef *hdma){
+	printf("DMA_Abort_func got a call, error = %ld\r\n", hdma->ErrorCode);
+
+}
+
+void DMA_Error_Func(DMA_HandleTypeDef *hdma){
+	printf("DMA_Error_func got a call, error = %ld\r\n", hdma->ErrorCode);
 
 }
 
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi){
 	printf("error %ld\n\r", hspi->ErrorCode);
-	//osSemaphoreRelease(myLightOnSemHandle);
+	osSemaphoreRelease(myLightOnSemHandle);
 	printf("Recieve overrun\n\r");
 }
 
-void HAL_SPI_AbortCpltCallback(SPI_HandleTypeDef *hspi){
-	__HAL_SPI_CLEAR_OVRFLAG(hspi);
-	int rc;
-	printf("got an abort callback\r\n");
-	rc=HAL_SPI_Receive_IT(&hspi1, temp_light_state, sizeof(temp_light_state));
+//void HAL_SPI_AbortCpltCallback(SPI_HandleTypeDef *hspi){
+	//__HAL_SPI_CLEAR_OVRFLAG(hspi);
+	//int rc;
+	//printf("got an abort callback\r\n");
+	//rc=HAL_SPI_Receive_IT(&hspi1, temp_light_state, sizeof(temp_light_state));
 
-	if(rc>0){
-		printf("returkoden är lika med %d\r\n", rc);
-	}
-}
+	//if(rc>0){
+		//printf("returkoden är lika med %d\r\n", rc);
+	//}
+//}
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 	//printf("det här är gpiopinirq: %x\n\r", GPIO_Pin);
 	if(GPIO_Pin & HiL_595_STCP_Pin){
+
+		printf("got to stcp gpio callback\n\r");
 		//int rc;
+		/*
 		int abortstatus;
 		//shift_reg_event |= SHIFTREGEVENT_STCP;
 		printf("I callbacken för stcp är temp %02x:%02x:%02x\n\r", temp_light_state[0], temp_light_state[1], temp_light_state[2]);
@@ -174,6 +193,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 		printf("failed abort error from stcp: %d\n\r", abortstatus);
 
 
+		*/
+
+
 		//rc=HAL_SPI_Receive_IT(&hspi1, temp_light_state, sizeof(temp_light_state));
 
 		//if(rc>0){
@@ -184,7 +206,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 
 	}
 	if(GPIO_Pin & HiL_595_Reset_Pin){
+
+		printf("got to reset gpio callback\n\r");
 		//int rc;
+
+		/*
 		int abortstatus;
 
 		//shift_reg_event |= SHIFTREGEVENT_RESET;
@@ -207,6 +233,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 			//printf("returkoden är lika med %d\r\n", rc);
 		//}
 		printf("error from abort in reset: %d\n\r", abortstatus);
+
+		*/
 
 		//osSemaphoreRelease(myLightOnSemHandle);
 
@@ -259,6 +287,7 @@ int main(void)
   MX_SPI3_Init();
   MX_TIM1_Init();
   MX_UART7_Init();
+  MX_DMA_Init();
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
 
@@ -761,6 +790,22 @@ static void MX_USB_OTG_FS_PCD_Init(void)
 }
 
 /**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA2_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA2_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -932,12 +977,33 @@ void StartShiftRegLightOn(void *argument)
 {
   /* USER CODE BEGIN StartShiftRegLightOn */
 	osSemaphoreAcquire(myLightOnSemHandle, 10000);
-	HAL_GPIO_EXTI_Callback(HiL_595_Reset_Pin);
+	//HAL_GPIO_EXTI_Callback(HiL_595_Reset_Pin);
+
+	/*
+	if (HAL_OK != HAL_DMA_RegisterCallback(&hdma_spi1_rx, HAL_DMA_XFER_CPLT_CB_ID, DMA_Done_Func)){
+		printf("error from DMA Done\n\r");
+	}
+
+	if (HAL_OK != HAL_DMA_RegisterCallback(&hdma_spi1_rx, HAL_DMA_XFER_ERROR_CB_ID, DMA_Error_Func)){
+		printf("error from DMA Error\n\r");
+	}
+
+
+	if (HAL_OK != HAL_DMA_RegisterCallback(&hdma_spi1_rx, HAL_DMA_XFER_ABORT_CB_ID, DMA_Abort_Func)){
+		printf("error from DMA Abort\n\r");
+	} */
+
+
+
+	 //HAL_SPI_RegisterCallback(&hspi1);
+
   /* Infinite loop */
   for(;;)
   {
 	  //int rc;
 	  int status;
+
+	  int dmastatus;
 
 //fot:
 	  //status = osSemaphoreAcquire(myLightSTCPHandle, 10000);
@@ -962,15 +1028,22 @@ void StartShiftRegLightOn(void *argument)
 		  //printf("returkoden är lika med %d\r\n", rc);
 	  //}
 
+	  dmastatus = HAL_SPI_TransmitReceive_DMA(&hspi1, temp_light_state, temp_light_state, 3);
+	  printf("HAL_SPI_Receive_DMA gave error code %d\n\r", dmastatus);
+
+	  //if (HAL_OK != dmastatus){
+		  //printf("HAL_SPI_Receive_DMA gave error code %d\n\r", dmastatus);
+	  //}
+
 
 again:
 	  status = osSemaphoreAcquire(myLightOnSemHandle, 10000);
 	  if(status != osOK){
 		  printf("acquire failed.\n\r");
-		  HAL_GPIO_EXTI_Callback(HiL_595_Reset_Pin);
+		  //HAL_GPIO_EXTI_Callback(HiL_595_Reset_Pin);
 		  goto again;
 	  }
-	  printf("Direkt efter semaforen är riktiga lightstate %02x:%02x:%02x\n\r", light_state[0], light_state[1], light_state[2]);
+	  printf("Direkt efter semaforen med DMA receive är temp lightstate %02x:%02x:%02x\n\r", temp_light_state[0], temp_light_state[1], temp_light_state[2]);
 
 	  //if(shift_reg_event & SHIFTREGEVENT_RESET){
 		  //shift_reg_event &= ~SHIFTREGEVENT_RESET;
