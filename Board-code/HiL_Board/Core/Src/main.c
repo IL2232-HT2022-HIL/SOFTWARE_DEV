@@ -836,10 +836,13 @@ void StartTask_controller(void *argument)
   /* Infinite loop */
   for(;;)
   {
+
 	  if( USB_MSGQ_Rx != NULL )
 	  {
+
 			status = osMessageQueueGet(USB_MSGQ_Rx, &msg, NULL, 0U);
-			if (status == osOK && sizeof(msg.Buf) == 4 )
+
+			if (status == osOK)
 			{
 				for (int i = 0; i < sizeof(msg.Buf); i++)
 				{
@@ -850,8 +853,7 @@ void StartTask_controller(void *argument)
 			}
 	  }
 
-
-	  osDelay(1);
+	  osDelay(10);
   }
   /* USER CODE END StartTask_controller */
 }

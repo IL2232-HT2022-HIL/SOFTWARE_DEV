@@ -1,5 +1,5 @@
 HiL_code/Src/HiL_Init_MSGQ.o: ../HiL_code/Src/HiL_Init_MSGQ.c \
- C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_Init_MSGQ.h \
+ /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_Init_MSGQ.h \
  ../Core/Inc/main.h ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
  ../Core/Inc/stm32f7xx_hal_conf.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h \
@@ -50,8 +50,8 @@ HiL_code/Src/HiL_Init_MSGQ.o: ../HiL_code/Src/HiL_Init_MSGQ.c \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
- C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ_obj.h
-C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_Init_MSGQ.h:
+ /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ_obj.h
+/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_Init_MSGQ.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
 ../Core/Inc/stm32f7xx_hal_conf.h:
@@ -103,4 +103,4 @@ C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Bo
 ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h:
-C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ_obj.h:
+/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ_obj.h:

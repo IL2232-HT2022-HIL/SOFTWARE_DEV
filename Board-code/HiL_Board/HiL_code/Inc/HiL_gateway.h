@@ -11,6 +11,7 @@
 #include "main.h"
 #include "HiL_config.h"
 #include <stdio.h>
+#include "usbd_cdc_if.h" //for transmission over USB
 
 
 void   HiL_gateway_transmit_message(int value1, int value2);

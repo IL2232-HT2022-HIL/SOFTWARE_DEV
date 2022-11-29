@@ -14,7 +14,7 @@
 ../Core/Src/main.c:790:6:StartDefaultTask	16	static
 ../Core/Src/main.c:810:6:StartTask_gateway	16	static
 ../Core/Src/main.c:828:6:StartTask_controller	48	static
-../Core/Src/main.c:866:6:StartTask_SHT20	16	static
-../Core/Src/main.c:884:6:StartTask_74HC595D	16	static
-../Core/Src/main.c:903:6:HAL_TIM_PeriodElapsedCallback	16	static
-../Core/Src/main.c:920:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:868:6:StartTask_SHT20	16	static
+../Core/Src/main.c:886:6:StartTask_74HC595D	16	static
+../Core/Src/main.c:905:6:HAL_TIM_PeriodElapsedCallback	16	static
+../Core/Src/main.c:922:6:Error_Handler	4	static,ignoring_inline_asm
