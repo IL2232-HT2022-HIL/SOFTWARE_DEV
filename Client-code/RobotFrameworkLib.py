@@ -108,16 +108,16 @@ class RobotFrameworkLib():
 				pass
 			
 			elif (transaction_status == 1):
-				print("Server: Non-specified error")
+				Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
-				print("Server: Object not supported")
+				Exception("Server: Object not supported")
 
 			elif (transaction_status == 3):
-				print("Server: Non-valid requested state")
+				Exception("Server: Non-valid requested state")
 			
 			else:
-				print("Server: Should not get here, investigate")
+				Exception("Server: Should not get here, investigate")
 
 	
 	def tune (self,instruction):
@@ -144,16 +144,16 @@ class RobotFrameworkLib():
 				pass
 			
 			elif (transaction_status == 1):
-				print("Server: Non-specified error")
+				raise Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
-				print("Server: Object not supported")
+				raise Exception("Server: Object not supported")
 
 			elif (transaction_status == 3):
-				print("Server: Non-valid requested state")
+				raise Exception("Server: Non-valid requested state")
 			
 			else:
-				print("Server: should not get here, investigate")
+				raise Exception("Server: should not get here, investigate")
 	
 
 	def set_temperature (self,instruction):
@@ -180,16 +180,16 @@ class RobotFrameworkLib():
 				pass
 			
 			elif (transaction_status == 1):
-				print("Server: Non-specified error")
+				Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
-				print("Server: Object not supported")
+				Exception("Server: Object not supported")
 
 			elif (transaction_status == 3):
-				print("Server: Non-valid requested state")
+				Exception("Server: Non-valid requested state")
 			
 			else:
-				print("Server: Should not get here, investigate")
+				Exception("Server: Should not get here, investigate")
 
 
 	def set_humidity (self,instruction):
@@ -215,16 +215,16 @@ class RobotFrameworkLib():
 				pass
 			
 			elif (transaction_status == 1):
-				print("Server: Non-specified error")
+				Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
-				print("Server: Object not supported")
+				Exception("Server: Object not supported")
 
 			elif (transaction_status == 3):
-				print("Server: Non-valid requested state")
+				Exception("Server: Non-valid requested state")
 			
 			else:
-				print("Server: Should not get here, investigate")
+				Exception("Server: Should not get here, investigate")
 
 
 	def check_if (self, instruction): 
@@ -254,5 +254,5 @@ obj = RobotFrameworkLib()
 if __name__=="__main__":
 
 	obj.open_server()
-	obj.turn_on("SW5")
+	obj.tune("Poti to 2.3")
 	obj.close_server()

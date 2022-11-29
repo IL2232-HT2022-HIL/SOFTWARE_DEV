@@ -8,6 +8,12 @@ Library           RobotFrameworkLib.py
 Test Button Functionality 
 
 	open server
-	turn on    SW5
+	turn on     TL1_Car
+	check if    TL1_Car is 1
+	turn off    TL1_Car
+	check if    TL1_Car is 0
+	tune    Poti to 2.3
+
+	close server
 	
 	
