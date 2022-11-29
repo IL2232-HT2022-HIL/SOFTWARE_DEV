@@ -29,7 +29,7 @@ BINARY_VALUES = {
 #-----------------------------
 #FOR USB COMMUNICATION:
 
-COM_PORT      = "COM6"
+COM_PORT      = ""
 USB_BAUD_RATE = 115200
 
 

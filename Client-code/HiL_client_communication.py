@@ -4,6 +4,8 @@ from HiL_config import COM_PORT, USB_BAUD_RATE                                  
 
 import time
 import serial
+import serial.tools.list_ports
+
 
 
 def HiL_client_communication_serial_port(enable):
@@ -12,6 +14,12 @@ def HiL_client_communication_serial_port(enable):
     if (enable):
 
         try:
+            ports=serial.tools.list_ports.comports()
+            for port, desc, hwid in sorted(ports):
+                if desc == "STM32 Virtual Port":
+                    print("COM PORT: {} used".format(port))
+                    COM_PORT = port
+
             global HiL_serial_link
             HiL_serial_link = serial.Serial(COM_PORT, USB_BAUD_RATE, timeout=0.5)
             if HiL_serial_link.isOpen():
