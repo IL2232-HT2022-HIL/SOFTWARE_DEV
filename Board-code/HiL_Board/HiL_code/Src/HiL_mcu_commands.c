@@ -9,6 +9,22 @@
 #include "HiL_mcu_commands.h"
 
 
+int HiL_mcu_commands_potentiometer_emulator(int value1, int value2)
+{
+
+	int desired_output_voltage = value1 + (value2 << 8);
+
+	if( (desired_output_voltage<0) || (desired_output_voltage>4095) ){
+		return 3; //error: out of bounds
+	}
+
+	HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, desired_output_voltage);
+	return 0;
+}
+
+
+
+
 int HiL_mcu_commands_binary_action (int binary_object, int desired_state)
 {
 

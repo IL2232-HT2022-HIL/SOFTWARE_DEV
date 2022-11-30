@@ -52,7 +52,10 @@ void HiL_controller_read_message(int* recieved_data)
 
 		case CONTROLLER_REQUEST_POTENTIOMETER:
 	
-			controller_reply[CONTROLLER_VALUE1] = CONTROLLER_ERROR_NO_SUPPORT;
+
+			controller_reply[CONTROLLER_VALUE1] = HiL_mcu_commands_potentiometer_emulator(
+													recieved_data[CONTROLLER_ACTION1],
+													recieved_data[CONTROLLER_ACTION2]);
 
 			HiL_gateway_transmit_message(controller_reply[CONTROLLER_VALUE1],
 		                                 controller_reply[CONTROLLER_VALUE2]);
@@ -97,12 +100,9 @@ void HiL_controller_send_message()
 
 
 		default:
-
 			// Reply with error
 			controller_reply[CONTROLLER_VALUE1] = CONTROLLER_ERROR_NO_SUPPORT;
-
-			HiL_gateway_transmit_message(controller_reply[CONTROLLER_VALUE1],
-		                                 controller_reply[CONTROLLER_VALUE2]);
+			HiL_gateway_transmit_message(0,32);
 	}
 }
 

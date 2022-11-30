@@ -14,7 +14,10 @@
 #include <stdio.h>
 
 
-int HiL_mcu_commands_potentiometer_emulator(int desired_output_voltage);
+extern DAC_HandleTypeDef hdac;
+
+
+int HiL_mcu_commands_potentiometer_emulator(int value1, int value2);
 
 int HiL_mcu_commands_binary_action (int binary_object, int desired_state);
 

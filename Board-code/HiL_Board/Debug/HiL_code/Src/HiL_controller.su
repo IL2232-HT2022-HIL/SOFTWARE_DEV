@@ -1,3 +1,3 @@
 ../HiL_code/Src/HiL_controller.c:14:6:HiL_controller_copy_array	24	static
 ../HiL_code/Src/HiL_controller.c:23:6:HiL_controller_read_message	16	static
-../HiL_code/Src/HiL_controller.c:84:6:HiL_controller_send_message	8	static
+../HiL_code/Src/HiL_controller.c:87:6:HiL_controller_send_message	8	static
