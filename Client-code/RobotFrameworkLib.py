@@ -33,16 +33,16 @@ class RobotFrameworkLib():
 
 			#Server Error Checking
 			if (transaction_status == 1):
-				Exception("Server: Non-specified error")
+				raise Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
-				Exception("Server: Object not supported")
+				raise Exception("Server: Object not supported")
 
 			elif (transaction_status == 3):
-				Exception("Server: Non-valid requested state")
+				raise Exception("Server: Non-valid requested state")
 			
 			elif (transaction_status != 0):
-				Exception("Server: Should not get here, investigate")
+				raise Exception("Server: Should not get here, investigate")
 
 
 	def turn_off (self,instruction):
@@ -62,16 +62,16 @@ class RobotFrameworkLib():
 
 			#Server Error Checking
 			if (transaction_status == 1):
-				Exception("Server: Non-specified error")
+				raise Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
-				Exception("Server: Object not supported")
+				raise Exception("Server: Object not supported")
 
 			elif (transaction_status == 3):
-				Exception("Server: Non-valid requested state")
+				raise Exception("Server: Non-valid requested state")
 			
 			elif (transaction_status != 0):
-				Exception("Server: Should not get here, investigate")
+				raise Exception("Server: Should not get here, investigate")
 
 
 	def push (self,instruction):
@@ -99,16 +99,16 @@ class RobotFrameworkLib():
 			
 			#Server Error Checking
 			if (transaction_status == 1):
-				Exception("Server: Non-specified error")
+				raise Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
-				Exception("Server: Object not supported")
+				raise Exception("Server: Object not supported")
 
 			elif (transaction_status == 3):
-				Exception("Server: Non-valid requested state")
+				raise Exception("Server: Non-valid requested state")
 			
 			elif (transaction_status != 0):
-				Exception("Server: Should not get here, investigate")
+				raise Exception("Server: Should not get here, investigate")
 
 	
 	def tune (self,instruction):
@@ -132,16 +132,16 @@ class RobotFrameworkLib():
 
 			#Server Error Checking
 			if (transaction_status == 1):
-				Exception("Server: Non-specified error")
+				raise Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
-				Exception("Server: Object not supported")
+				raise Exception("Server: Object not supported")
 
 			elif (transaction_status == 3):
-				Exception("Server: Non-valid requested state")
+				raise Exception("Server: Non-valid requested state")
 			
 			elif (transaction_status != 0):
-				Exception("Server: Should not get here, investigate")
+				raise Exception("Server: Should not get here, investigate")
 	
 
 	def set_temperature (self,instruction):
@@ -165,16 +165,16 @@ class RobotFrameworkLib():
 
 			#Server Error Checking
 			if (transaction_status == 1):
-				Exception("Server: Non-specified error")
+				raise Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
-				Exception("Server: Object not supported")
+				raise Exception("Server: Object not supported")
 
 			elif (transaction_status == 3):
-				Exception("Server: Non-valid requested state")
+				raise Exception("Server: Non-valid requested state")
 			
 			elif (transaction_status != 0):
-				Exception("Server: Should not get here, investigate")
+				raise Exception("Server: Should not get here, investigate")
 
 
 	def set_humidity (self,instruction):
@@ -197,16 +197,16 @@ class RobotFrameworkLib():
 
 			#Server Error Checking
 			if (transaction_status == 1):
-				Exception("Server: Non-specified error")
+				raise Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
-				Exception("Server: Object not supported")
+				raise Exception("Server: Object not supported")
 
 			elif (transaction_status == 3):
-				Exception("Server: Non-valid requested state")
+				raise Exception("Server: Non-valid requested state")
 			
 			elif (transaction_status != 0):
-				Exception("Server: Should not get here, investigate")
+				raise Exception("Server: Should not get here, investigate")
 
 
 	def check_if (self, instruction): 
@@ -254,7 +254,9 @@ if __name__=="__main__":
 	obj.check_if("SW5 is 0")
 	obj.check_if("TL4_Car is 1")
 	obj.turn_off("TL4_Car")
-	obj.check_if("TL4_Car is 1")
+	obj.check_if("TL4_Car is 0")
+
+	obj.tune("Poti to 5.3")
 
 
 

@@ -51,7 +51,7 @@ CONTROLLER_REQUEST = {
 		
 CONTROLLER_GET_GROUPS = {
 "CONTROLLER_GET_GROUP_BINARY" : ControllerObjectClass(0 ,"CONTROLLER_GET_GROUP_BINARY"),
-"POT_OBJECTS"                 : ControllerObjectClass(0 ,"POT_OBJECTS")
+"POT_OBJECTS"                 : ControllerObjectClass(1 ,"POT_OBJECTS")
 }
 
 BINARY_OBJECTS = {
