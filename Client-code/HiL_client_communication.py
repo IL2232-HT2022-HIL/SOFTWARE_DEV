@@ -1,6 +1,6 @@
 
 from HiL_config import CONTROLLER_REQUEST, CONTROLLER_OBJECTS, CONTROLLER_ACTIONS #FOR ENCODING
-from HiL_config import COM_PORT, USB_BAUD_RATE                                    #FOR USB
+from HiL_config import COM_PORT, USB_BAUD_RATE, VIRTUAL_SERVER                    #FOR USB
 
 import time
 import serial
@@ -41,22 +41,30 @@ def HiL_client_communication_serial_port(enable):
 # send messages
 def HiL_client_communication_transmit(encoded_message):
     
-    try:
-        HiL_serial_link.reset_input_buffer()
-        HiL_serial_link.write(bytes(encoded_message))
-        
-    except Exception as exc:
-        raise
+    if VIRTUAL_SERVER: 
+        pass
+    
+    else:
+        try:
+            HiL_serial_link.reset_input_buffer()
+            HiL_serial_link.write(bytes(encoded_message))
+            
+        except Exception as exc:
+            raise
 
 # receive messages
 def HiL_client_communication_receive():
     
-    try:
-        recieved_message_array = list(HiL_serial_link.read(HiL_serial_link.in_waiting))
-        return recieved_message_array[0:2:]
-        
-    except Exception as exc:
-        raise
+    if VIRTUAL_SERVER: 
+        return [1,0]
+
+    else:
+        try:
+            recieved_message_array = list(HiL_serial_link.read(HiL_serial_link.in_waiting))
+            return recieved_message_array[0:2:]
+            
+        except Exception as exc:
+            raise
 
 
 def HiL_client_communication_encode(message):

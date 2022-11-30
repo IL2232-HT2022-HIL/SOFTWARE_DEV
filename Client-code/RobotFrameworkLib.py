@@ -1,7 +1,7 @@
 
 import HiL_client
-from HiL_config import CONTROLLER_OBJECTS, CONTROLLER_GET_GROUPS, BINARY_OBJECTS, POT_OBJECTS, SHT20_OBJECTS, TIME_UNITS
-
+import HiL_client_communication
+from HiL_config import *
 import time
 
 #The methods are called from the robot framework file, and the instruction functions will handle the method call
@@ -32,20 +32,17 @@ class RobotFrameworkLib():
 			transaction_status = HiL_client.HiL_client_turn_on_instruction(string_list[0])
 
 			#Server Error Checking
-			if (transaction_status == 0):
-				pass
-			
-			elif (transaction_status == 1):
-				raise Exception("Server: Non-specified error")
+			if (transaction_status == 1):
+				Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
-				raise Exception("Server: Object not supported")
+				Exception("Server: Object not supported")
 
 			elif (transaction_status == 3):
-				raise Exception("Server: Non-valid state request")
+				Exception("Server: Non-valid requested state")
 			
-			else:
-				raise Exception("Server: Should not get here, investigate")
+			elif (transaction_status != 0):
+				Exception("Server: Should not get here, investigate")
 
 
 	def turn_off (self,instruction):
@@ -64,20 +61,17 @@ class RobotFrameworkLib():
 			transaction_status = HiL_client.HiL_client_turn_off_instruction(string_list[0])
 
 			#Server Error Checking
-			if (transaction_status == 0):
-				pass
-			
-			elif (transaction_status == 1):
-				raise Exception("Server: Non-specified error")
+			if (transaction_status == 1):
+				Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
-				raise Exception("Server: Object not supported")
+				Exception("Server: Object not supported")
 
 			elif (transaction_status == 3):
-				raise Exception("Server: Non-valid state request")
+				Exception("Server: Non-valid requested state")
 			
-			else:
-				raise Exception("Server: Should not get here, investigate")
+			elif (transaction_status != 0):
+				Exception("Server: Should not get here, investigate")
 
 
 	def push (self,instruction):
@@ -102,12 +96,9 @@ class RobotFrameworkLib():
 
 		else:
 			transaction_status = HiL_client.HiL_client_push_instruction(string_list)
-
-			#Server Error Checking
-			if (transaction_status == 0):
-				pass
 			
-			elif (transaction_status == 1):
+			#Server Error Checking
+			if (transaction_status == 1):
 				Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
@@ -116,7 +107,7 @@ class RobotFrameworkLib():
 			elif (transaction_status == 3):
 				Exception("Server: Non-valid requested state")
 			
-			else:
+			elif (transaction_status != 0):
 				Exception("Server: Should not get here, investigate")
 
 	
@@ -140,20 +131,17 @@ class RobotFrameworkLib():
 			transaction_status = HiL_client.HiL_client_tune_instruction(string_list)
 
 			#Server Error Checking
-			if (transaction_status == 0):
-				pass
-			
-			elif (transaction_status == 1):
-				raise Exception("Server: Non-specified error")
+			if (transaction_status == 1):
+				Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
-				raise Exception("Server: Object not supported")
+				Exception("Server: Object not supported")
 
 			elif (transaction_status == 3):
-				raise Exception("Server: Non-valid requested state")
+				Exception("Server: Non-valid requested state")
 			
-			else:
-				raise Exception("Server: should not get here, investigate")
+			elif (transaction_status != 0):
+				Exception("Server: Should not get here, investigate")
 	
 
 	def set_temperature (self,instruction):
@@ -176,10 +164,7 @@ class RobotFrameworkLib():
 			transaction_status = HiL_client.HiL_client_set_temperature_instruction(string_list)
 
 			#Server Error Checking
-			if (transaction_status == 0):
-				pass
-			
-			elif (transaction_status == 1):
+			if (transaction_status == 1):
 				Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
@@ -188,7 +173,7 @@ class RobotFrameworkLib():
 			elif (transaction_status == 3):
 				Exception("Server: Non-valid requested state")
 			
-			else:
+			elif (transaction_status != 0):
 				Exception("Server: Should not get here, investigate")
 
 
@@ -211,10 +196,7 @@ class RobotFrameworkLib():
 			transaction_status = HiL_client.HiL_client_set_humidity_instruction(string_list)
 
 			#Server Error Checking
-			if (transaction_status == 0):
-				pass
-			
-			elif (transaction_status == 1):
+			if (transaction_status == 1):
 				Exception("Server: Non-specified error")
 
 			elif (transaction_status == 2):
@@ -223,7 +205,7 @@ class RobotFrameworkLib():
 			elif (transaction_status == 3):
 				Exception("Server: Non-valid requested state")
 			
-			else:
+			elif (transaction_status != 0):
 				Exception("Server: Should not get here, investigate")
 
 
@@ -239,14 +221,28 @@ class RobotFrameworkLib():
 		elif string_list[0] not in CONTROLLER_OBJECTS:
 			raise Exception("Object is not supported")
 
+		#check if object group is supported
 		elif CONTROLLER_OBJECTS[string_list[0]].object_get_group not in CONTROLLER_GET_GROUPS:
 			raise Exception("Group is not supported")
 
 		else:
-			reply = HiL_client.HiL_client_check_if_instruction(string_list)
+			transaction_status, comparison, expected_value, actual_value = HiL_client.HiL_client_check_if_instruction(string_list)
 
-			if int(string_list[2]) != reply:
-				raise Exception("Wrong reply (expected: {}, given: {})".format(string_list[2],reply))
+			if (transaction_status == 1):
+				raise Exception("Server: Non-specified error")
+
+			elif (transaction_status == 2):
+				raise Exception("Server: Object not supported")
+
+			elif (transaction_status == 3):
+				raise Exception("Server: Non-valid requested state")
+			
+			elif (transaction_status != 0):
+				raise Exception("Server: Should not get here, investigate")
+
+			else:
+				if comparison is not OK:
+					raise Exception("Client: Wrong reply (expected: {}, given: {})".format(expected_value,actual_value))
 
 
 # The following codes are just for debuging this file
@@ -254,5 +250,12 @@ obj = RobotFrameworkLib()
 if __name__=="__main__":
 
 	obj.open_server()
-	obj.tune("Poti to 2.3")
+	obj.turn_on("TL4_Car")
+	obj.check_if("SW5 is 0")
+	obj.check_if("TL4_Car is 1")
+	obj.turn_off("TL4_Car")
+	obj.check_if("TL4_Car is 1")
+
+
+
 	obj.close_server()
