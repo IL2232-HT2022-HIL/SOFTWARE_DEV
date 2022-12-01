@@ -93,10 +93,19 @@ def HiL_client_turn_off_instruction(binary_object):
 	return HiL_client_transaction(python_instruction)
 
 
+def HiL_client_wait_instruction(string_list):
+
+	wait_time  = float(string_list[0])
+	time_unit  = string_list[1]
+
+	sleep_time = wait_time / (TIME_UNITS[time_unit])
+	time.sleep(sleep_time)
+	
+
 def HiL_client_push_instruction(string_list):
 
 	binary_object = string_list[0]
-	wait_time     = int (string_list[2])
+	wait_time     = float(string_list[2])
 	time_unit     = string_list[3]
 
 	transaction_status = HiL_client_turn_on_instruction(binary_object)

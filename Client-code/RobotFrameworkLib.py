@@ -73,6 +73,20 @@ class RobotFrameworkLib():
 			elif (transaction_status != 0):
 				raise Exception("Server: Should not get here, investigate")
 
+	def wait (self,instruction):
+
+		string_list = instruction.split(" ")
+
+		if (len(string_list) != 2):
+			raise Exception("Client: Input not correct length, expected 2")
+
+		elif string_list[1] not in TIME_UNITS:
+			raise Exception("Client: Time unit is not supported")
+
+		else: 
+			HiL_client.HiL_client_wait_instruction(string_list)
+
+
 
 	def push (self,instruction):
 
@@ -249,6 +263,7 @@ class RobotFrameworkLib():
 obj = RobotFrameworkLib()
 if __name__=="__main__":
 
+	"""
 	obj.open_server()
 	obj.turn_on("TL4_Car")
 	obj.check_if("SW5 is 0")
@@ -258,6 +273,7 @@ if __name__=="__main__":
 
 	obj.tune("Poti to 5.3")
 
-
-
 	obj.close_server()
+	"""
+	obj.wait("2.5 seconds")
+
