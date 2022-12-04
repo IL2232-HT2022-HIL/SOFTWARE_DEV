@@ -163,7 +163,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 	//printf("det här är gpiopinirq: %x\n\r", GPIO_Pin);
 	if(GPIO_Pin & HiL_595_STCP_Pin){
 
-		//printf("got to stcp gpio callback\n\r");
+		printf("got to stcp gpio callback\n\r");
 		//int rc;
 		/*
 		int abortstatus;
@@ -196,7 +196,23 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 	}
 	if(GPIO_Pin & HiL_595_Reset_Pin){
 
-		//printf("got to reset gpio callback\n\r");
+		int rc;
+
+		printf("got to reset gpio callback\n\r");
+
+		HAL_SPI_DMAStop(&hspi1);
+
+		__HAL_RCC_SPI1_FORCE_RESET();
+		__HAL_RCC_SPI1_RELEASE_RESET();
+
+		MX_SPI1_Init();
+
+		rc = HAL_SPI_Receive_DMA(&hspi1, temp_light_state, sizeof(temp_light_state));
+
+		if (rc!=HAL_OK){
+			printf("returncode from dma receive in reset: %d \n\r", rc);
+		}
+
 		//int rc;
 
 		/*
@@ -228,6 +244,16 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 		//osSemaphoreRelease(myLightOnSemHandle);
 
 	}
+}
+
+int get_light_state(uint8_t *buffer, int size){
+	//Call this function to get all lights' states
+	//TODO: Describe all 24 bits of led-info abcdefxx ghijklxx mnopqrxx
+	if (size > sizeof(light_state)){
+		size=sizeof(light_state);
+	}
+	memcpy(buffer, light_state, size);
+	return 0;
 }
 
 /* USER CODE END PFP */
@@ -997,6 +1023,8 @@ again:
 
 		  goto again;
 	  }
+	  memcpy(light_state, temp_light_state, sizeof(light_state));
+
 	  printf("Direkt efter semaforen med DMA receive är temp lightstate %02x:%02x:%02x\n\r", temp_light_state[0], temp_light_state[1], temp_light_state[2]);
 
   }
