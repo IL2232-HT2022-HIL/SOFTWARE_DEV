@@ -14,7 +14,7 @@
 #include "usbd_cdc_if.h" //for transmission over USB
 
 
-void   HiL_gateway_transmit_message(int value1, int value2);
+void HiL_gateway_transmit_message(uint8_t value1, uint8_t value2);
 
 
 #endif /* GATEWAY__GATEWAY_H_ */

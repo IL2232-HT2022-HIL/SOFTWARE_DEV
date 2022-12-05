@@ -7,13 +7,12 @@
 
 #include "HiL_controller.h"
 
-int recieved_data[4];
-int controller_reply[2];
-
+static uint8_t recieved_data[4];
+	   uint8_t controller_reply[2];
 
 void HiL_controller_copy_array(int* to_be_copied)
 {
-	for (int i = 0; i<4; i++)
+	for (uint8_t i = 0; i<4; i++)
 	{
 		recieved_data[i] = to_be_copied[i];
 	}

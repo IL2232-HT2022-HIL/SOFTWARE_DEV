@@ -9,12 +9,12 @@
 #include "HiL_mcu_commands.h"
 
 
-int HiL_mcu_commands_potentiometer_emulator(int value1, int value2)
+uint8_t HiL_mcu_commands_potentiometer_emulator(uint8_t value1, uint8_t value2)
 {
 
-	int desired_output_voltage = value1 + (value2 << 8);
+	uint16_t desired_output_voltage = value1 + (value2 << 8);
 
-	if( (desired_output_voltage<0) || (desired_output_voltage>4095) ){
+	if( (desired_output_voltage < 0) || (desired_output_voltage > 4095) ){
 		return 3; //error: out of bounds
 	}
 
@@ -23,9 +23,7 @@ int HiL_mcu_commands_potentiometer_emulator(int value1, int value2)
 }
 
 
-
-
-int HiL_mcu_commands_binary_action (int binary_object, int desired_state)
+uint8_t HiL_mcu_commands_binary_action (uint8_t binary_object, uint8_t desired_state)
 {
 
 	GPIO_PinState pin_state;
@@ -107,7 +105,7 @@ int HiL_mcu_commands_binary_action (int binary_object, int desired_state)
 	
 }
 
-int HiL_mcu_commands_binary_status (int binary_object)
+uint8_t HiL_mcu_commands_binary_status (uint8_t binary_object)
 {
 	switch (binary_object)
 	{
