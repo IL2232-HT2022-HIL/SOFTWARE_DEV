@@ -274,7 +274,7 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 
   if( USB_MSGQ_Rx != NULL )
   	{
-	  	memset (msg.Buf, '\0', 4);						//Clear msg-obj
+	  	memset (msg.Buf, '\0', HiL_MSGQ_Buf_arr_len);	//Clear msg-obj
   		memcpy (msg.Buf, Buf, len);						//Copy usb buffer to msg-obj
   		osMessageQueuePut(USB_MSGQ_Rx, &msg, 0U, 0U);	//Put object in queue, no timeout.
   	}

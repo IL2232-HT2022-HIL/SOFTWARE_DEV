@@ -117,7 +117,7 @@ const osThreadAttr_t Task_74HC595D_attributes = {
 };
 /* USER CODE BEGIN PV */
 osMessageQueueId_t USB_MSGQ_Rx;
-osMessageQueueId_t USB_MSGQ_Tx;
+//osMessageQueueId_t USB_MSGQ_Tx;		//Not currently in use
 
 /* USER CODE END PV */
 

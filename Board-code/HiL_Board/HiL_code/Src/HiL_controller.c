@@ -7,12 +7,12 @@
 
 #include "HiL_controller.h"
 
-static uint8_t recieved_data[4];
+static uint8_t recieved_data[HiL_MSGQ_Buf_arr_len];
 	   uint8_t controller_reply[2];
 
-void HiL_controller_copy_array(int* to_be_copied)
+void HiL_controller_copy_array(uint8_t* to_be_copied)
 {
-	for (uint8_t i = 0; i<4; i++)
+	for (uint8_t i = 0; i<HiL_MSGQ_Buf_arr_len; i++)
 	{
 		recieved_data[i] = to_be_copied[i];
 	}
