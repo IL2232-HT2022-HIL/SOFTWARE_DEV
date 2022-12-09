@@ -1,4 +1,5 @@
 "./Core/Src/HiL_gateway.o"
+"./Core/Src/HiL_mcu_commands.o"
 "./Core/Src/freertos.o"
 "./Core/Src/main.o"
 "./Core/Src/setup.o"
