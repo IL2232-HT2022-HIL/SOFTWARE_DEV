@@ -2,3 +2,5 @@
 *.pyc
 *.html
 *.xml
+*.o
+*.mk
