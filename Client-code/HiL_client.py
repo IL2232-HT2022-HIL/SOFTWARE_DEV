@@ -168,6 +168,9 @@ def HiL_client_check_if_instruction(string_list):
 	if object_group == "CONTROLLER_GET_GROUP_BINARY":
 		expected_value = int(string_list[2])
 		
+	elif object_group == "CONTROLLER_GET_GROUP_PWM":
+		expected_value = int(string_list[2])
+
 	elif object_group == "POT_OBJECTS":
 		expected_value = HiL_client_DAC_conversion(float(string_list[2]),"decode")
 

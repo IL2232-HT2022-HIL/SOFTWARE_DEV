@@ -263,17 +263,15 @@ class RobotFrameworkLib():
 obj = RobotFrameworkLib()
 if __name__=="__main__":
 
-	"""
 	obj.open_server()
 	obj.turn_on("TL4_Car")
 	obj.check_if("SW5 is 0")
 	obj.check_if("TL4_Car is 1")
 	obj.turn_off("TL4_Car")
 	obj.check_if("TL4_Car is 0")
-
 	obj.tune("Poti to 5.3")
-
+	obj.check_if("PWM_MEASUREMENT is 32")
 	obj.close_server()
-	"""
-	obj.wait("2.5 seconds")
+	
+	
 
