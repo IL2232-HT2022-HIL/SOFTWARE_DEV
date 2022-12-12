@@ -154,9 +154,11 @@ def HiL_client_set_humidity_instruction(string_list):
 
 def HiL_client_check_if_instruction(string_list):
 
-	object_group = CONTROLLER_OBJECTS[string_list[0]].object_get_group
+	controller_object = string_list[0]
+	object_group = CONTROLLER_OBJECTS[controller_object].object_get_group
+	expected_value_string = string_list[2]
 	
-	python_instruction = "CONTROLLER_REQUEST_GET {} {}".format(object_group,string_list[0])
+	python_instruction = "CONTROLLER_REQUEST_GET {} {}".format(object_group,controller_object)
 	reply = HiL_client_transaction(python_instruction)
 
 	# reply includes two bits of information: the status code of the request 
@@ -166,13 +168,13 @@ def HiL_client_check_if_instruction(string_list):
 	received_value     = (reply & 0xfff)      # actual useful value 
 
 	if object_group == "CONTROLLER_GET_GROUP_BINARY":
-		expected_value = int(string_list[2])
+		expected_value = int(expected_value_string)
 		
 	elif object_group == "CONTROLLER_GET_GROUP_PWM":
-		expected_value = int(string_list[2])
+		expected_value = int(expected_value_string)
 
 	elif object_group == "POT_OBJECTS":
-		expected_value = HiL_client_DAC_conversion(float(string_list[2]),"decode")
+		expected_value = HiL_client_DAC_conversion(float(expected_value_string),"decode")
 
 	comparison = OK if received_value == expected_value else not OK 
 				
