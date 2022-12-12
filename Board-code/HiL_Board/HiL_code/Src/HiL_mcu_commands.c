@@ -7,6 +7,11 @@
 
 
 #include "HiL_mcu_commands.h"
+#include "cmsis_os.h"
+
+
+extern uint8_t Duty;
+extern TIM_HandleTypeDef htim1;
 
 
 uint8_t HiL_mcu_commands_potentiometer_emulator(uint8_t value1, uint8_t value2)
@@ -153,4 +158,21 @@ uint8_t HiL_mcu_commands_binary_status (uint8_t binary_object)
 			return CONTROLLER_ERROR_NO_SUPPORT; // Switch not currently supported
 
 	}
+}
+
+uint8_t HiL_mcu_commands_PWM_measure ()
+{
+													// Start timers and interrupts
+		HAL_TIM_IC_Start_IT(&htim1, TIM_CHANNEL_1); // Primary channel - rising edge - rinse and repeat
+		HAL_TIM_IC_Start(&htim1, TIM_CHANNEL_2);    // Secondary channel - falling edge - stop second counter
+
+		osDelay(1);				//	Wait for  pwm-period to complete. Smallest tick time is currently 1 millisecond. PWM freq is 8 kHz, so this is slow
+
+												   // Stop timers and interrupts
+		HAL_TIM_IC_Stop_IT(&htim1, TIM_CHANNEL_1); // Primary channel - rising edge - rinse and repeat
+		HAL_TIM_IC_Stop(&htim1, TIM_CHANNEL_2);    // Secondary channel - falling edge - stop second counter
+
+
+
+		return Duty;
 }

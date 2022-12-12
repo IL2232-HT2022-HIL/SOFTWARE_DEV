@@ -25,9 +25,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
-#include "HiL_MSGQ_obj.h"
 #include "HiL_controller.h"
-#include "HiL_Init_MSGQ.h"
+#include "HiL_MSGQ.h"
 
 /* USER CODE END Includes */
 
@@ -38,6 +37,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -115,6 +116,13 @@ const osThreadAttr_t Task_74HC595D_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for myTask06 */
+osThreadId_t myTask06Handle;
+const osThreadAttr_t myTask06_attributes = {
+  .name = "myTask06",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* USER CODE BEGIN PV */
 osMessageQueueId_t USB_MSGQ_Rx;
 //osMessageQueueId_t USB_MSGQ_Tx;		//Not currently in use
@@ -137,6 +145,7 @@ void StartTask_gateway(void *argument);
 void StartTask_controller(void *argument);
 void StartTask_SHT20(void *argument);
 void StartTask_74HC595D(void *argument);
+void StartTask06(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -144,8 +153,6 @@ void StartTask_74HC595D(void *argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-
 
 /* USER CODE END 0 */
 
@@ -171,9 +178,6 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
-
-
 
   /* USER CODE END Init */
 
@@ -237,6 +241,9 @@ int main(void)
 
   /* creation of Task_74HC595D */
   Task_74HC595DHandle = osThreadNew(StartTask_74HC595D, NULL, &Task_74HC595D_attributes);
+
+  /* creation of myTask06 */
+  myTask06Handle = osThreadNew(StartTask06, NULL, &myTask06_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -579,8 +586,9 @@ static void MX_TIM1_Init(void)
   /* USER CODE END TIM1_Init 0 */
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_SlaveConfigTypeDef sSlaveConfig = {0};
   TIM_IC_InitTypeDef sConfigIC = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
 
   /* USER CODE BEGIN TIM1_Init 1 */
 
@@ -605,10 +613,12 @@ static void MX_TIM1_Init(void)
   {
     Error_Handler();
   }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+  sSlaveConfig.SlaveMode = TIM_SLAVEMODE_RESET;
+  sSlaveConfig.InputTrigger = TIM_TS_TI1FP1;
+  sSlaveConfig.TriggerPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
+  sSlaveConfig.TriggerPrescaler = TIM_ICPSC_DIV1;
+  sSlaveConfig.TriggerFilter = 0;
+  if (HAL_TIM_SlaveConfigSynchro(&htim1, &sSlaveConfig) != HAL_OK)
   {
     Error_Handler();
   }
@@ -617,6 +627,19 @@ static void MX_TIM1_Init(void)
   sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
   sConfigIC.ICFilter = 0;
   if (HAL_TIM_IC_ConfigChannel(&htim1, &sConfigIC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_FALLING;
+  sConfigIC.ICSelection = TIM_ICSELECTION_INDIRECTTI;
+  if (HAL_TIM_IC_ConfigChannel(&htim1, &sConfigIC, TIM_CHANNEL_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
   {
     Error_Handler();
   }
@@ -836,7 +859,7 @@ void StartTask_controller(void *argument)
   /* Infinite loop */
   MSGQ_obj msg;
   osStatus status;
-  int recieve_message[4];
+  uint8_t recieve_message[4];
 
   /* Infinite loop */
   for(;;)
@@ -897,6 +920,24 @@ void StartTask_74HC595D(void *argument)
     osDelay(1);
   }
   /* USER CODE END StartTask_74HC595D */
+}
+
+/* USER CODE BEGIN Header_StartTask06 */
+/**
+* @brief Function implementing the myTask06 thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask06 */
+void StartTask06(void *argument)
+{
+  /* USER CODE BEGIN StartTask06 */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartTask06 */
 }
 
 /**

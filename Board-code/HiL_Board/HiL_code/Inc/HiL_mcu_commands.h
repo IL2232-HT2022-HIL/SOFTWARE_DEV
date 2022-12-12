@@ -23,5 +23,7 @@ uint8_t HiL_mcu_commands_binary_action (uint8_t binary_object, uint8_t desired_s
 
 uint8_t HiL_mcu_commands_binary_status (uint8_t binary_object);
 
+uint8_t HiL_mcu_commands_PWM_measure ();
+
 
 #endif /* USER_COMMANDS_H_ */

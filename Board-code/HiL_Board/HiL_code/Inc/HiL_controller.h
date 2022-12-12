@@ -26,12 +26,12 @@
 #include "HiL_mcu_commands.h"
 
 //parses message, and tries to execute commands.
-void HiL_controller_read_message(int* recieved_data);
+void HiL_controller_read_message(uint8_t* recieved_data);
 
 // Function send message to gateway
 void HiL_controller_send_message();
 
 // get the pointer to the recieved client message
-void HiL_controller_copy_array(int* to_be_copied);
+void HiL_controller_copy_array(uint8_t* to_be_copied);
 
 #endif /* CONTROLLER__CONTROLLER_H_ */

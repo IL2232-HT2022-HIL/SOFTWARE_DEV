@@ -6,6 +6,10 @@
  */
 
 #include "HiL_controller.h"
+#include "cmsis_os.h"
+#include "HiL_MSGQ.h"
+
+extern uint8_t Duty;
 
 static uint8_t recieved_data[HiL_MSGQ_Buf_arr_len];
 	   uint8_t controller_reply[2];
@@ -19,7 +23,7 @@ void HiL_controller_copy_array(uint8_t* to_be_copied)
 }
 
 //parses message, and tries to execute commands.
-void HiL_controller_read_message(int* recieved_data)
+void HiL_controller_read_message(uint8_t* recieved_data)
 {
 	//reset status array
 	controller_reply[CONTROLLER_VALUE1] = 0;
@@ -72,6 +76,7 @@ void HiL_controller_read_message(int* recieved_data)
 			break;
 
 
+
 		default: 
 
 			// Reply with error
@@ -97,6 +102,15 @@ void HiL_controller_send_message()
 		                                 controller_reply[CONTROLLER_VALUE2]);
 			break;
 
+		case CONTROLLER_REQUEST_PWM_MEASURE:
+
+
+			controller_reply[CONTROLLER_VALUE1] = HiL_mcu_commands_PWM_measure();
+
+			HiL_gateway_transmit_message(controller_reply[CONTROLLER_VALUE1],
+										 controller_reply[CONTROLLER_VALUE2]);
+
+			break;
 
 		default:
 			// Reply with error

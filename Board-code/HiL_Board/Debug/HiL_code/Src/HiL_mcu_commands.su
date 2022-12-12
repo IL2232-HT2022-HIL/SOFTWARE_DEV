@@ -1,3 +1,4 @@
-../HiL_code/Src/HiL_mcu_commands.c:12:9:HiL_mcu_commands_potentiometer_emulator	24	static
-../HiL_code/Src/HiL_mcu_commands.c:26:9:HiL_mcu_commands_binary_action	24	static
-../HiL_code/Src/HiL_mcu_commands.c:108:9:HiL_mcu_commands_binary_status	16	static
+../HiL_code/Src/HiL_mcu_commands.c:17:9:HiL_mcu_commands_potentiometer_emulator	24	static
+../HiL_code/Src/HiL_mcu_commands.c:31:9:HiL_mcu_commands_binary_action	24	static
+../HiL_code/Src/HiL_mcu_commands.c:113:9:HiL_mcu_commands_binary_status	16	static
+../HiL_code/Src/HiL_mcu_commands.c:163:9:HiL_mcu_commands_PWM_measure	8	static

@@ -39,7 +39,8 @@
 // -------------------------------------
 // GET GROUPS
 
-#define CONTROLLER_GET_GROUP_BINARY 0
+#define CONTROLLER_GET_GROUP_BINARY 	 0
+#define CONTROLLER_REQUEST_PWM_MEASURE	 1 // Measure PWM duty cycle
 
 // -------------------------------------
 // CONTROLLER_OBJECTS
@@ -65,6 +66,9 @@
 
 // POTENTIOMETER OBJECTS
 #define HiL_Poti 0
+
+// PWM_OBJECTS
+#define PWM_MEASUREMENT 0
 
 // -------------------------------------
 // ACTIONS

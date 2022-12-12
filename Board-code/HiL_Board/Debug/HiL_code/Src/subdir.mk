@@ -5,19 +5,22 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../HiL_code/Src/HiL_Init_MSGQ.c \
+../HiL_code/Src/HiL_MSGQ.c \
+../HiL_code/Src/HiL_callbacks.c \
 ../HiL_code/Src/HiL_controller.c \
 ../HiL_code/Src/HiL_gateway.c \
 ../HiL_code/Src/HiL_mcu_commands.c 
 
 OBJS += \
-./HiL_code/Src/HiL_Init_MSGQ.o \
+./HiL_code/Src/HiL_MSGQ.o \
+./HiL_code/Src/HiL_callbacks.o \
 ./HiL_code/Src/HiL_controller.o \
 ./HiL_code/Src/HiL_gateway.o \
 ./HiL_code/Src/HiL_mcu_commands.o 
 
 C_DEPS += \
-./HiL_code/Src/HiL_Init_MSGQ.d \
+./HiL_code/Src/HiL_MSGQ.d \
+./HiL_code/Src/HiL_callbacks.d \
 ./HiL_code/Src/HiL_controller.d \
 ./HiL_code/Src/HiL_gateway.d \
 ./HiL_code/Src/HiL_mcu_commands.d 
@@ -30,7 +33,7 @@ HiL_code/Src/%.o HiL_code/Src/%.su: ../HiL_code/Src/%.c HiL_code/Src/subdir.mk
 clean: clean-HiL_code-2f-Src
 
 clean-HiL_code-2f-Src:
-	-$(RM) ./HiL_code/Src/HiL_Init_MSGQ.d ./HiL_code/Src/HiL_Init_MSGQ.o ./HiL_code/Src/HiL_Init_MSGQ.su ./HiL_code/Src/HiL_controller.d ./HiL_code/Src/HiL_controller.o ./HiL_code/Src/HiL_controller.su ./HiL_code/Src/HiL_gateway.d ./HiL_code/Src/HiL_gateway.o ./HiL_code/Src/HiL_gateway.su ./HiL_code/Src/HiL_mcu_commands.d ./HiL_code/Src/HiL_mcu_commands.o ./HiL_code/Src/HiL_mcu_commands.su
+	-$(RM) ./HiL_code/Src/HiL_MSGQ.d ./HiL_code/Src/HiL_MSGQ.o ./HiL_code/Src/HiL_MSGQ.su ./HiL_code/Src/HiL_callbacks.d ./HiL_code/Src/HiL_callbacks.o ./HiL_code/Src/HiL_callbacks.su ./HiL_code/Src/HiL_controller.d ./HiL_code/Src/HiL_controller.o ./HiL_code/Src/HiL_controller.su ./HiL_code/Src/HiL_gateway.d ./HiL_code/Src/HiL_gateway.o ./HiL_code/Src/HiL_gateway.su ./HiL_code/Src/HiL_mcu_commands.d ./HiL_code/Src/HiL_mcu_commands.o ./HiL_code/Src/HiL_mcu_commands.su
 
 .PHONY: clean-HiL_code-2f-Src
 

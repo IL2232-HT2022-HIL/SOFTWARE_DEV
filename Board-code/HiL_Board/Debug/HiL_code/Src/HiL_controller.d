@@ -49,7 +49,19 @@ HiL_code/Src/HiL_controller.o: ../HiL_code/Src/HiL_controller.c \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
- C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h
+ C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h \
+ ../Core/Inc/FreeRTOSConfig.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
+ C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ.h
 C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_controller.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
@@ -102,3 +114,15 @@ C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Bo
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h:
 C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h:
+../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
+../Core/Inc/FreeRTOSConfig.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h:
+../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/task.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/list.h:
+../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h:
+C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ.h:

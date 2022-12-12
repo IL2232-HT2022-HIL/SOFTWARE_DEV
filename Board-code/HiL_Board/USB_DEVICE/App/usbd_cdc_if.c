@@ -22,8 +22,7 @@
 #include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-
-#include "HiL_MSGQ_obj.h"			// Structs such as MSGQ_obj can't be external, so in header where needed instead.
+#include "HiL_MSGQ.h"
 #include "cmsis_os2.h"
 /* USER CODE END INCLUDE */
 
