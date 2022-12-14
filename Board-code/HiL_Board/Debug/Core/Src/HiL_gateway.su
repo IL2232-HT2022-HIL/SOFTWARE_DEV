@@ -1,2 +1,0 @@
-../Core/Src/HiL_gateway.c:6:6:HiL_gateway_get_message	48	static
-../Core/Src/HiL_gateway.c:19:6:HiL_gateway_send_message	48	static
