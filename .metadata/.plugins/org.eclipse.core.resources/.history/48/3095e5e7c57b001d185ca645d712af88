@@ -1,0 +1,12 @@
+
+
+
+void init_i2c(){
+	aRxBuffer[0]=0x00;
+	aRxBuffer[1]=0x00;
+	aRxBuffer[2]=0x00;
+	aRxBuffer[3]=0x00;
+	aTxBuffer[0]=0x00;
+	aTxBuffer[1]=0x00;
+	aTxBuffer[2]=0x00;
+}
