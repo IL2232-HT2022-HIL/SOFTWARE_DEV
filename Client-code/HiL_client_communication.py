@@ -1,11 +1,10 @@
 
 from HiL_config import CONTROLLER_REQUEST, CONTROLLER_OBJECTS, CONTROLLER_ACTIONS #FOR ENCODING
-from HiL_config import COM_PORT, USB_BAUD_RATE, VIRTUAL_SERVER                    #FOR USB
+from HiL_config import COM_PORT, USB_BAUD_RATE, VIRTUAL_SERVER    #FOR USB
 
 import time
 import serial
 import serial.tools.list_ports
-
 
 
 def HiL_client_communication_serial_port(enable):
@@ -26,7 +25,7 @@ def HiL_client_communication_serial_port(enable):
                 print("serial port opened")
             
         except Exception as exc:
-            raise
+            raise Exception("Couldn't connect to server, check connection")
 
     else:
         
@@ -56,16 +55,15 @@ def HiL_client_communication_transmit(encoded_message):
 def HiL_client_communication_receive():
     
     if VIRTUAL_SERVER: 
-        return [1,0]
+        return [ord('a'),0]
 
     else:
         try:
-            recieved_message_array = list(HiL_serial_link.read(HiL_serial_link.in_waiting))
-            return recieved_message_array[0:2:]
+            recieved_message_array = list(HiL_serial_link.read(size=2))
+            return recieved_message_array
             
         except Exception as exc:
-            raise
-
+            raise Exception("Client: Communication interrupted, check connection to server")
 
 def HiL_client_communication_encode(message):
     
@@ -97,10 +95,15 @@ def HiL_client_communication_encode(message):
 
 def HiL_client_communication_decode(recieved_message_array):
 
-    value1 = recieved_message_array[0] #LSB
-    value2 = recieved_message_array[1] #MSB
+    try:
+        value1 = recieved_message_array[0] #LSB
+        value2 = recieved_message_array[1] #MSB
 
-    return (value2 << 8) + value1
+        return (value2 << 8) + value1
+        
+    except Exception as e:
+        raise Exception("Client: Communication interrupted, check connection to server")
+    
 
 
 if __name__ == '__main__':

@@ -9,8 +9,6 @@ class RobotFrameworkLib():
 
 	def open_server(self):
 		HiL_client.HiL_client_setup_server_instruction(enable=True)
-		time.sleep(2)
-
 
 	def close_server(self):
 		HiL_client.HiL_client_setup_server_instruction(enable=False)
@@ -259,19 +257,68 @@ class RobotFrameworkLib():
 					raise Exception("Client: Wrong reply (expected: {}, given: {})".format(expected_value,actual_value))
 
 
+	def read_UART (self): 
+	
+		transaction_status = HiL_client.HiL_client_read_uart_instruction()
+
+		if (transaction_status == 1):
+			raise Exception("Server: Non-specified error")
+
+		elif (transaction_status == 2):
+			raise Exception("Server: Object not supported")
+
+		elif (transaction_status == 3):
+			raise Exception("Server: Non-valid requested state")
+
+		elif (transaction_status == 4):
+			pass #the loop was terminated before buffer size was counter up to.
+
+		
+		elif (transaction_status != 0):
+			raise Exception("Server: Should not get here, investigate")
+
+		else:
+			pass
+
+
+	def view_display (self):
+
+		transaction_status = HiL_client.HiL_client_view_display_instruction()
+
+		if (transaction_status == 1):
+			raise Exception("Server: Non-specified error")
+
+		elif (transaction_status == 2):
+			raise Exception("Server: Object not supported")
+
+		elif (transaction_status == 3):
+			raise Exception("Server: Non-valid requested state")
+		
+		elif (transaction_status != 0):
+			raise Exception("Server: Should not get here, investigate")
+
+		else:
+			pass
+
+
+
 # The following codes are just for debuging this file
 obj = RobotFrameworkLib()
 if __name__=="__main__":
 
+	"""
 	obj.open_server()
 	obj.turn_on("TL4_Car")
 	obj.check_if("SW5 is 0")
 	obj.check_if("TL4_Car is 1")
 	obj.turn_off("TL4_Car")
 	obj.check_if("TL4_Car is 0")
-	obj.tune("Poti to 5.3")
+	obj.tune("Poti to 2.3")
 	obj.check_if("PWM_MEASUREMENT is 32")
 	obj.close_server()
-	
+	"""	
+	obj.open_server()
+	obj.read_UART()
+	obj.close_server()
 	
 

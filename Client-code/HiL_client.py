@@ -65,8 +65,6 @@ def HiL_client_transaction(instrucion_string):
 	encoded_message = HiL_client_communication.HiL_client_communication_encode(instrucion_string)
 	HiL_client_communication.HiL_client_communication_transmit(encoded_message)
 
-	time.sleep(0.1)
-
 	recieved_message_array = HiL_client_communication.HiL_client_communication_receive()
 	transaction_status = HiL_client_communication.HiL_client_communication_decode(recieved_message_array)
 
@@ -75,7 +73,6 @@ def HiL_client_transaction(instrucion_string):
 		print(encoded_message)
 
 	return transaction_status
-
 
 def HiL_client_setup_server_instruction(enable):
 	HiL_client_communication.HiL_client_communication_serial_port(enable)
@@ -179,3 +176,63 @@ def HiL_client_check_if_instruction(string_list):
 	comparison = OK if received_value == expected_value else not OK 
 				
 	return transaction_status, comparison, expected_value, received_value 
+
+
+def HiL_client_read_uart_instruction():
+	
+	controller_object = "UART"
+	object_group = CONTROLLER_OBJECTS[controller_object].object_get_group
+
+	uart_buffer = [] # used as input buffer from UART
+
+	# resets buffer pointer in server 
+	python_instruction = "CONTROLLER_REQUEST_GET {} {} {}".format(object_group,controller_object,0) #zero indicates reset pointer 
+	reply = HiL_client_transaction(python_instruction)
+
+	transaction_status = (reply >> 12) & 0xff # status code embedded in last 4 bits
+	received_character = chr((reply & 0xfff)) # actual useful value 
+
+	if (transaction_status != 0):
+		return transaction_status 
+
+	counter = 0
+	while True: #do-while 
+		python_instruction = "CONTROLLER_REQUEST_GET {} {} {}".format(object_group,controller_object,1) #one indicates get value and increment pointer 
+		reply = HiL_client_transaction(python_instruction)
+
+		transaction_status = (reply >> 12) & 0xff # status code embedded in last 4 bits
+		received_character = chr((reply & 0xfff)) # actual useful value 
+		
+		if (counter == UART_BUFFER_SIZE) or (transaction_status != 0):
+			break
+		else:
+			uart_buffer.append(received_character) # received character added to buffer
+			counter += 1
+
+	print(''.join(uart_buffer))
+
+	return transaction_status
+
+
+def HiL_client_view_display_instruction():
+	
+	controller_object = "DISPLAY"
+	object_group = CONTROLLER_OBJECTS[controller_object].object_get_group
+
+	display_buffer = []
+
+	#reset_pointer 
+	python_instruction = "CONTROLLER_REQUEST_GET {} {} {}".format(object_group,controller_object,0) #resets buffer pointer
+	reply = HiL_client_transaction(python_instruction)
+
+	transaction_status = (reply >> 12) & 0xff # status code embedded in last 4 bits
+	received_character = chr((reply & 0xfff)) # actual useful value 
+
+	if (transaction_status != 0):
+		return transaction_status 
+
+	for i in range(10):
+		python_instruction = "CONTROLLER_REQUEST_GET {} {} {}".format(object_group,controller_object,1) #gets buffer content and increment pointer
+		reply = HiL_client_transaction(python_instruction)
+
+	return 0
