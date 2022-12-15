@@ -162,15 +162,15 @@ class RobotFrameworkLib():
 
 		#Check the length of the string, should be 3
 		if (len(string_list) != 4):
-			raise Exception("Input not correct length, expect 3")
+			raise Exception("Client: Input not correct length, expected 3")
 		
 		#check if object is supported
 		elif string_list[1] not in SHT20_OBJECTS:
-			raise Exception("Object is not supported")
+			raise Exception("Client: Object is not supported")
 
 
 		elif string_list[2] != "to":
-			raise Exception("Missing word: to")
+			raise Exception("Client: Missing word: to")
 
 		else:
 			transaction_status = HiL_client.HiL_client_set_temperature_instruction(string_list)
@@ -195,14 +195,14 @@ class RobotFrameworkLib():
 
 		#Check the length of the string, should be 3
 		if (len(string_list) != 4):
-			raise Exception("Input not correct length, expect 3")
+			raise Exception("Client: Input not correct length, expect 3")
 		
 		#check if object is supported
 		elif string_list[1] not in SHT20_OBJECTS:
-			raise Exception("Object is not supported")
+			raise Exception("Client: Object is not supported")
 		
 		elif string_list[2] != "to":
-			raise Exception("Missing word: to")
+			raise Exception("Client: Missing word: to")
 		
 		else:
 			transaction_status = HiL_client.HiL_client_set_humidity_instruction(string_list)
@@ -227,15 +227,15 @@ class RobotFrameworkLib():
 
 		#Check the length of the string, should be 3
 		if (len(string_list) != 3):
-			raise Exception("Input not correct length, expect 3")
+			raise Exception("Client: Input not correct length, expect 3")
 		
 		#check if object is supported
 		elif string_list[0] not in CONTROLLER_OBJECTS:
-			raise Exception("Object is not supported")
+			raise Exception("CLient: Object is not supported")
 
 		#check if object group is supported
 		elif CONTROLLER_OBJECTS[string_list[0]].object_get_group not in CONTROLLER_GET_GROUPS:
-			raise Exception("Group is not supported")
+			raise Exception("Client: Group is not supported")
 
 		else:
 			transaction_status, comparison, expected_value, actual_value = HiL_client.HiL_client_check_if_instruction(string_list)
@@ -259,7 +259,7 @@ class RobotFrameworkLib():
 
 	def read_UART (self): 
 	
-		transaction_status = HiL_client.HiL_client_read_uart_instruction()
+		transaction_status,received_uart_string = HiL_client.HiL_client_read_uart_instruction()
 
 		if (transaction_status == 1):
 			raise Exception("Server: Non-specified error")
@@ -269,16 +269,12 @@ class RobotFrameworkLib():
 
 		elif (transaction_status == 3):
 			raise Exception("Server: Non-valid requested state")
-
-		elif (transaction_status == 4):
-			pass #the loop was terminated before buffer size was counter up to.
-
 		
 		elif (transaction_status != 0):
 			raise Exception("Server: Should not get here, investigate")
 
 		else:
-			pass
+			print(received_uart_string)
 
 
 	def view_display (self):
@@ -306,7 +302,7 @@ class RobotFrameworkLib():
 obj = RobotFrameworkLib()
 if __name__=="__main__":
 
-	"""
+	
 	obj.open_server()
 	obj.turn_on("TL4_Car")
 	obj.check_if("SW5 is 0")
@@ -314,11 +310,8 @@ if __name__=="__main__":
 	obj.turn_off("TL4_Car")
 	obj.check_if("TL4_Car is 0")
 	obj.tune("Poti to 2.3")
-	obj.check_if("PWM_MEASUREMENT is 32")
-	obj.close_server()
-	"""	
-	obj.open_server()
 	obj.read_UART()
-	obj.close_server()
+	obj.close_server()	
+	
 	
 

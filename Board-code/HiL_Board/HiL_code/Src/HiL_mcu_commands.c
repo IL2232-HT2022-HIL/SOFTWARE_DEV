@@ -14,6 +14,11 @@ extern uint8_t Duty;
 extern TIM_HandleTypeDef htim1;
 
 
+extern uint8_t uart_main_buffer[HIL_UART_BUFFER_SIZE];
+uint8_t uart_main_buffer_pointer = 0;
+
+
+
 uint8_t HiL_mcu_commands_potentiometer_emulator(uint8_t value1, uint8_t value2)
 {
 
@@ -172,7 +177,29 @@ uint8_t HiL_mcu_commands_PWM_measure ()
 		HAL_TIM_IC_Stop_IT(&htim1, TIM_CHANNEL_1); // Primary channel - rising edge - rinse and repeat
 		HAL_TIM_IC_Stop(&htim1, TIM_CHANNEL_2);    // Secondary channel - falling edge - stop second counter
 
-
-
 		return Duty;
 }
+
+
+uint16_t HiL_mcu_commands_UART_handler (uint8_t controller_get_action)
+{
+	if (controller_get_action == 0)
+	{
+		uart_main_buffer_pointer = 0;
+		return 0<<12; // transaction status: all good
+	}
+	else
+	{
+		uint16_t return_value = uart_main_buffer[uart_main_buffer_pointer];
+
+		if (return_value != 0)
+		{
+			uart_main_buffer_pointer = (uart_main_buffer_pointer < HIL_UART_BUFFER_SIZE ? uart_main_buffer_pointer+1 : 0);
+		}
+
+		return return_value;
+	}
+
+}
+
+

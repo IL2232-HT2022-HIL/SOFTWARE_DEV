@@ -155,26 +155,39 @@ def HiL_client_check_if_instruction(string_list):
 	object_group = CONTROLLER_OBJECTS[controller_object].object_get_group
 	expected_value_string = string_list[2]
 	
-	python_instruction = "CONTROLLER_REQUEST_GET {} {}".format(object_group,controller_object)
-	reply = HiL_client_transaction(python_instruction)
+	if object_group == "CONTROLLER_GET_GROUP_DATA_STREAMS":
 
-	# reply includes two bits of information: the status code of the request 
-	# and the actual value that is requested. bit 0-11 = value, bit 12-15 = status code
+		if controller_object == "UART":
+			transaction_status, received_value = HiL_client_read_uart_instruction()
+			expected_value = expected_value_string
+		else:
+			transaction_status = 2
+			received_value = 0
+			expected_value = 0
 
-	transaction_status = (reply >> 12) & 0xff # error code embedded in last 4 bits
-	received_value     = (reply & 0xfff)      # actual useful value 
+	else:
 
-	if object_group == "CONTROLLER_GET_GROUP_BINARY":
-		expected_value = int(expected_value_string)
-		
-	elif object_group == "CONTROLLER_GET_GROUP_PWM":
-		expected_value = int(expected_value_string)
+		python_instruction = "CONTROLLER_REQUEST_GET {} {}".format(object_group,controller_object)
+		reply = HiL_client_transaction(python_instruction)
 
-	elif object_group == "POT_OBJECTS":
-		expected_value = HiL_client_DAC_conversion(float(expected_value_string),"decode")
+		# reply includes two bits of information: the status code of the request 
+		# and the actual value that is requested. bit 0-11 = value, bit 12-15 = status code
 
+		transaction_status = (reply >> 12) & 0xff # error code embedded in last 4 bits
+		received_value     = (reply & 0xfff)      # actual useful value 
+
+		if object_group == "CONTROLLER_GET_GROUP_BINARY":
+			expected_value = int(expected_value_string)
+			
+		elif object_group == "CONTROLLER_GET_GROUP_PWM":
+			expected_value = int(expected_value_string)
+
+		elif object_group == "POT_OBJECTS":
+			expected_value = HiL_client_DAC_conversion(float(expected_value_string),"decode")
+
+	
 	comparison = OK if received_value == expected_value else not OK 
-				
+
 	return transaction_status, comparison, expected_value, received_value 
 
 
@@ -203,15 +216,15 @@ def HiL_client_read_uart_instruction():
 		transaction_status = (reply >> 12) & 0xff # status code embedded in last 4 bits
 		received_character = chr((reply & 0xfff)) # actual useful value 
 		
-		if (counter == UART_BUFFER_SIZE) or (transaction_status != 0):
+		if (counter == UART_BUFFER_SIZE) or (transaction_status != 0) or received_character == '\00':
 			break
 		else:
 			uart_buffer.append(received_character) # received character added to buffer
 			counter += 1
 
-	print(''.join(uart_buffer))
+	received_uart_string = ''.join(uart_buffer)
 
-	return transaction_status
+	return transaction_status, received_uart_string
 
 
 def HiL_client_view_display_instruction():
