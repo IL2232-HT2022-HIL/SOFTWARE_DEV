@@ -102,7 +102,7 @@ void HiL_controller_send_message()
 		                                 controller_reply[CONTROLLER_VALUE2]);
 			break;
 
-		case CONTROLLER_REQUEST_PWM_MEASURE:
+		case CONTROLLER_GET_GROUP_PWM:
 
 
 			controller_reply[CONTROLLER_VALUE1] = HiL_mcu_commands_PWM_measure();
@@ -111,6 +111,27 @@ void HiL_controller_send_message()
 										 controller_reply[CONTROLLER_VALUE2]);
 
 			break;
+
+		case CONTROLLER_GET_GROUP_DATA_STREAMS:
+
+			if (recieved_data[CONTROLLER_GET_OBJECT] == DATA_STREAM_OBJECTS_UART)
+			{
+
+				uint16_t function_return = HiL_mcu_commands_UART_handler(recieved_data[CONTROLLER_GET_ACTION]);
+
+				controller_reply[CONTROLLER_VALUE1] =  function_return       & 0xff;
+				controller_reply[CONTROLLER_VALUE2] = (function_return >> 8) & 0xff;
+
+				HiL_gateway_transmit_message(controller_reply[CONTROLLER_VALUE1],
+										     controller_reply[CONTROLLER_VALUE2]);
+
+				break;
+
+			}
+			else
+			{}
+
+
 
 		default:
 			// Reply with error

@@ -11,6 +11,16 @@
 // FOR DEBUG
 #define CONTROLLER_INFO 0
 
+
+
+// -------------------------------------
+// BUFFER SIZES
+
+#define HIL_UART_BUFFER_SIZE 128
+
+
+
+
 // -------------------------------------
 // KEYWORDS FOR PARSING
 
@@ -23,6 +33,7 @@
 // FOR VALUE RECEIVE MESSAGES
 #define CONTROLLER_GET_GROUP  1
 #define CONTROLLER_GET_OBJECT 2
+#define CONTROLLER_GET_ACTION 3
 
 // FOR REPLY
 #define CONTROLLER_VALUE1 0
@@ -31,16 +42,18 @@
 // -------------------------------------
 // CONTROLLER_REQUESTS
 
-#define CONTROLLER_REQUEST_GET           0 // get data from server
-#define CONTROLLER_REQUEST_ACTUATE       1 // button/switch stimuli
-#define CONTROLLER_REQUEST_POTENTIOMETER 2 // potentiometer emulation
-#define CONTROLLER_REQUEST_SHT20         3 // SHT20 emulator stimuli
+#define CONTROLLER_REQUEST_GET            0 // get data from server
+#define CONTROLLER_REQUEST_ACTUATE        1 // button/switch stimuli
+#define CONTROLLER_REQUEST_POTENTIOMETER  2 // potentiometer emulation
+#define CONTROLLER_REQUEST_SHT20          3 // SHT20 emulator stimuli
+
 
 // -------------------------------------
 // GET GROUPS
 
-#define CONTROLLER_GET_GROUP_BINARY 	 0
-#define CONTROLLER_REQUEST_PWM_MEASURE	 1 // Measure PWM duty cycle
+#define CONTROLLER_GET_GROUP_BINARY 	  0
+#define CONTROLLER_GET_GROUP_PWM	      1 // Measure PWM duty cycle
+#define CONTROLLER_GET_GROUP_DATA_STREAMS 3
 
 // -------------------------------------
 // CONTROLLER_OBJECTS
@@ -69,6 +82,11 @@
 
 // PWM_OBJECTS
 #define PWM_MEASUREMENT 0
+
+// DATA_STREAM_OBJECTS
+#define DATA_STREAM_OBJECTS_UART 0
+
+
 
 // -------------------------------------
 // ACTIONS

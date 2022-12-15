@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
+extern DMA_HandleTypeDef hdma_uart7_rx;
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
@@ -630,6 +631,28 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
     GPIO_InitStruct.Alternate = GPIO_AF8_UART7;
     HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
+    /* UART7 DMA Init */
+    /* UART7_RX Init */
+    hdma_uart7_rx.Instance = DMA1_Stream3;
+    hdma_uart7_rx.Init.Channel = DMA_CHANNEL_5;
+    hdma_uart7_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
+    hdma_uart7_rx.Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma_uart7_rx.Init.MemInc = DMA_MINC_ENABLE;
+    hdma_uart7_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+    hdma_uart7_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+    hdma_uart7_rx.Init.Mode = DMA_NORMAL;
+    hdma_uart7_rx.Init.Priority = DMA_PRIORITY_LOW;
+    hdma_uart7_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+    if (HAL_DMA_Init(&hdma_uart7_rx) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
+    __HAL_LINKDMA(huart,hdmarx,hdma_uart7_rx);
+
+    /* UART7 interrupt Init */
+    HAL_NVIC_SetPriority(UART7_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(UART7_IRQn);
   /* USER CODE BEGIN UART7_MspInit 1 */
 
   /* USER CODE END UART7_MspInit 1 */
@@ -659,6 +682,11 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
     */
     HAL_GPIO_DeInit(GPIOE, HiL_UART7_RX_Pin|HiL_UART7_TX_Pin);
 
+    /* UART7 DMA DeInit */
+    HAL_DMA_DeInit(huart->hdmarx);
+
+    /* UART7 interrupt DeInit */
+    HAL_NVIC_DisableIRQ(UART7_IRQn);
   /* USER CODE BEGIN UART7_MspDeInit 1 */
 
   /* USER CODE END UART7_MspDeInit 1 */

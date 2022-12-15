@@ -25,5 +25,7 @@ uint8_t HiL_mcu_commands_binary_status (uint8_t binary_object);
 
 uint8_t HiL_mcu_commands_PWM_measure ();
 
+uint16_t HiL_mcu_commands_UART_handler (uint8_t controller_get_action);
+
 
 #endif /* USER_COMMANDS_H_ */

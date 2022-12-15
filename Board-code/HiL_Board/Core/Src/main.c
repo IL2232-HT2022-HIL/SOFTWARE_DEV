@@ -80,6 +80,7 @@ SPI_HandleTypeDef hspi3;
 TIM_HandleTypeDef htim1;
 
 UART_HandleTypeDef huart7;
+DMA_HandleTypeDef hdma_uart7_rx;
 
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -116,13 +117,6 @@ const osThreadAttr_t Task_74HC595D_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for myTask06 */
-osThreadId_t myTask06Handle;
-const osThreadAttr_t myTask06_attributes = {
-  .name = "myTask06",
-  .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityLow,
-};
 /* USER CODE BEGIN PV */
 osMessageQueueId_t USB_MSGQ_Rx;
 //osMessageQueueId_t USB_MSGQ_Tx;		//Not currently in use
@@ -140,12 +134,12 @@ static void MX_SPI1_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_UART7_Init(void);
+static void MX_DMA_Init(void);
 void StartDefaultTask(void *argument);
 void StartTask_gateway(void *argument);
 void StartTask_controller(void *argument);
 void StartTask_SHT20(void *argument);
 void StartTask_74HC595D(void *argument);
-void StartTask06(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -153,6 +147,7 @@ void StartTask06(void *argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+uint8_t uart_rx_buffer[HIL_UART_BUFFER_SIZE];
 
 /* USER CODE END 0 */
 
@@ -190,6 +185,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_CAN1_Init();
   MX_DAC_Init();
   MX_ETH_Init();
@@ -198,9 +194,11 @@ int main(void)
   MX_SPI3_Init();
   MX_TIM1_Init();
   MX_UART7_Init();
+
   /* USER CODE BEGIN 2 */
 
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
+  HAL_UARTEx_ReceiveToIdle_DMA(&huart7, uart_rx_buffer, HIL_UART_BUFFER_SIZE);
 
   /* USER CODE END 2 */
 
@@ -241,9 +239,6 @@ int main(void)
 
   /* creation of Task_74HC595D */
   Task_74HC595DHandle = osThreadNew(StartTask_74HC595D, NULL, &Task_74HC595D_attributes);
-
-  /* creation of myTask06 */
-  myTask06Handle = osThreadNew(StartTask06, NULL, &myTask06_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -685,6 +680,22 @@ static void MX_UART7_Init(void)
 }
 
 /**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Stream3_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -920,24 +931,6 @@ void StartTask_74HC595D(void *argument)
     osDelay(1);
   }
   /* USER CODE END StartTask_74HC595D */
-}
-
-/* USER CODE BEGIN Header_StartTask06 */
-/**
-* @brief Function implementing the myTask06 thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartTask06 */
-void StartTask06(void *argument)
-{
-  /* USER CODE BEGIN StartTask06 */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END StartTask06 */
 }
 
 /**

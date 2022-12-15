@@ -1,1 +1,2 @@
-../HiL_code/Src/HiL_callbacks.c:20:6:HAL_TIM_IC_CaptureCallback	16	static
+../HiL_code/Src/HiL_callbacks.c:25:6:HAL_TIM_IC_CaptureCallback	16	static
+../HiL_code/Src/HiL_callbacks.c:39:6:HAL_UARTEx_RxEventCallback	16	static

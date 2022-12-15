@@ -1,5 +1,5 @@
 HiL_code/Src/HiL_controller.o: ../HiL_code/Src/HiL_controller.c \
- C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_controller.h \
+ /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_controller.h \
  ../Core/Inc/main.h ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
  ../Core/Inc/stm32f7xx_hal_conf.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h \
@@ -39,8 +39,8 @@ HiL_code/Src/HiL_controller.o: ../HiL_code/Src/HiL_controller.c \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_ll_usb.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd_ex.h \
- C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_config.h \
- C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_gateway.h \
+ /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_config.h \
+ /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_gateway.h \
  ../USB_DEVICE/App/usbd_cdc_if.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
@@ -49,7 +49,7 @@ HiL_code/Src/HiL_controller.o: ../HiL_code/Src/HiL_controller.c \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
- C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h \
+ /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h \
  ../Core/Inc/FreeRTOSConfig.h \
@@ -61,8 +61,8 @@ HiL_code/Src/HiL_controller.o: ../HiL_code/Src/HiL_controller.c \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
- C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ.h
-C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_controller.h:
+ /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ.h
+/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_controller.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
 ../Core/Inc/stm32f7xx_hal_conf.h:
@@ -103,8 +103,8 @@ C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Bo
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_ll_usb.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd_ex.h:
-C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_config.h:
-C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_gateway.h:
+/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_config.h:
+/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_gateway.h:
 ../USB_DEVICE/App/usbd_cdc_if.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
@@ -113,7 +113,7 @@ C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Bo
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h:
-C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h:
+/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
 ../Core/Inc/FreeRTOSConfig.h:
@@ -125,4 +125,4 @@ C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Bo
 ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h:
-C:/SKOLAN\ H/T11/Embedded\ Projekt\ IL2232/Github/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ.h:
+/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ.h:
