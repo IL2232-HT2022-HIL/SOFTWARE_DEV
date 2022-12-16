@@ -2,6 +2,6 @@
 ../Core/Src/HiL_mcu_commands.c:62:5:crc	16	static
 ../Core/Src/HiL_mcu_commands.c:75:6:HAL_I2C_SlaveTxCpltCallback	16	static
 ../Core/Src/HiL_mcu_commands.c:91:6:HAL_I2C_SlaveRxCpltCallback	24	static
-../Core/Src/HiL_mcu_commands.c:126:6:HAL_I2C_AddrCallback	16	static
-../Core/Src/HiL_mcu_commands.c:162:6:HAL_I2C_ListenCpltCallback	16	static
-../Core/Src/HiL_mcu_commands.c:173:6:HAL_I2C_ErrorCallback	16	static
+../Core/Src/HiL_mcu_commands.c:124:6:HAL_I2C_AddrCallback	16	static
+../Core/Src/HiL_mcu_commands.c:160:6:HAL_I2C_ListenCpltCallback	16	static
+../Core/Src/HiL_mcu_commands.c:171:6:HAL_I2C_ErrorCallback	16	static

@@ -29,8 +29,8 @@ __IO uint32_t     Xfer_Complete = 0;
 #define send_hum_nh 0xF5
 
 
-unsigned short temperature;
-unsigned short humidity;
+uint32_t temperature;
+uint32_t humidity;
 
 
 
@@ -94,18 +94,16 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *I2cHandle)
 
   Xfer_Complete = 1;
   if (aRxBuffer[1] == send_temp_h || aRxBuffer[1] == send_temp_nh){
-	  int temp = temperature<<8;
-	  temp = crc(temp);
-	  aTxBuffer[0] = (temp >> 16) & 0xFF;
-	  aTxBuffer[1] = (temp >> 8) & 0xFF;
-	  aTxBuffer[2] = (temp >> 0) & 0xFF;
+	  uint8_t crc_val = HAL_CRC_Calculate(&hcrc, &temperature, 1);
+	  aTxBuffer[0] = (temperature>>8) && 0xFF;
+	  aTxBuffer[1] = temperature && 0xFF;
+	  aTxBuffer[2] = crc_val;
   }
   else if (aRxBuffer[1] == send_hum_h || aRxBuffer[1] == send_hum_nh){
-	  int hum = humidity<<8;
-	  hum = crc(hum);
-	  aTxBuffer[0] = (hum >> 16) & 0xFF;
-	  aTxBuffer[1] = (hum >> 8) & 0xFF;
-	  aTxBuffer[2] = (hum >> 0) & 0xFF;
+	  uint8_t crc_val = HAL_CRC_Calculate(&hcrc, &humidity, 1);
+	  aTxBuffer[0] = (humidity>>8) && 0xFF;
+	  aTxBuffer[1] = humidity && 0xFF;
+	  aTxBuffer[2] = crc_val;
   }
   aRxBuffer[0]=0x00;
   aRxBuffer[1]=0x00;

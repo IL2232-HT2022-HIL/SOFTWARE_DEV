@@ -1,5 +1,13 @@
 #include "setup.h"
 
+uint8_t aTxBuffer[3];
+
+uint8_t aRxBuffer[4];
+
+
+
+CRC_HandleTypeDef hcrc;
+
 
 void init_i2c_buffer(){
 	aRxBuffer[0]=0x00;

@@ -1,22 +1,17 @@
-16:46:37 **** Incremental Build of configuration Debug for project MCU_HiL_Board ****
+16:02:02 **** Incremental Build of configuration Debug for project MCU_HiL_Board ****
 make -j8 all 
-arm-none-eabi-gcc "../Core/Src/HiL_mcu_commands.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/HiL_mcu_commands.d" -MT"Core/Src/HiL_mcu_commands.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/HiL_mcu_commands.o"
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
 arm-none-eabi-gcc "../Core/Src/setup.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/setup.d" -MT"Core/Src/setup.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/setup.o"
-../Core/Src/HiL_mcu_commands.c: In function 'crc':
-../Core/Src/HiL_mcu_commands.c:64:1: warning: control reaches end of non-void function [-Wreturn-type]
-   64 | }
-      | ^
 arm-none-eabi-gcc -o "MCU_HiL_Board.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\fredr\Documents\HIL_proj\SOFTWARE_DEV\Board-code\HiL_Board\STM32F767ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MCU_HiL_Board.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-c:\st\stm32cubeide_1.10.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\arm-none-eabi\bin\ld.exe: ./Core/Src/main.o:C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/Debug/../Core/Inc/setup.h:5: multiple definition of `aTxBuffer'; ./Core/Src/HiL_mcu_commands.o:C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/Debug/../Core/Inc/setup.h:5: first defined here
-c:\st\stm32cubeide_1.10.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\arm-none-eabi\bin\ld.exe: ./Core/Src/main.o:C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/Debug/../Core/Inc/setup.h:8: multiple definition of `aRxBuffer'; ./Core/Src/HiL_mcu_commands.o:C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/Debug/../Core/Inc/setup.h:8: first defined here
-c:\st\stm32cubeide_1.10.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\arm-none-eabi\bin\ld.exe: ./Core/Src/main.o:C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/Debug/../Core/Inc/setup.h:11: multiple definition of `hi2c1'; ./Core/Src/HiL_mcu_commands.o:C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/Debug/../Core/Inc/setup.h:11: first defined here
-c:\st\stm32cubeide_1.10.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\arm-none-eabi\bin\ld.exe: ./Core/Src/setup.o:C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/Debug/../Core/Inc/setup.h:5: multiple definition of `aTxBuffer'; ./Core/Src/HiL_mcu_commands.o:C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/Debug/../Core/Inc/setup.h:5: first defined here
-c:\st\stm32cubeide_1.10.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\arm-none-eabi\bin\ld.exe: ./Core/Src/setup.o:C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/Debug/../Core/Inc/setup.h:8: multiple definition of `aRxBuffer'; ./Core/Src/HiL_mcu_commands.o:C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/Debug/../Core/Inc/setup.h:8: first defined here
-c:\st\stm32cubeide_1.10.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\arm-none-eabi\bin\ld.exe: ./Core/Src/setup.o:C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/Debug/../Core/Inc/setup.h:11: multiple definition of `hi2c1'; ./Core/Src/HiL_mcu_commands.o:C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/Debug/../Core/Inc/setup.h:11: first defined here
-collect2.exe: error: ld returned 1 exit status
-make: *** [makefile:68: MCU_HiL_Board.elf] Error 1
-"make -j8 all" terminated with exit code 2. Build might be incomplete.
+Finished building target: MCU_HiL_Board.elf
+ 
+arm-none-eabi-size   MCU_HiL_Board.elf 
+arm-none-eabi-objdump -h -S  MCU_HiL_Board.elf  > "MCU_HiL_Board.list"
+   text	   data	    bss	    dec	    hex	filename
+  40368	    444	  21468	  62280	   f348	MCU_HiL_Board.elf
+Finished building: default.size.stdout
+ 
+Finished building: MCU_HiL_Board.list
+ 
 
-16:46:38 Build Failed. 7 errors, 1 warnings. (took 1s.411ms)
+16:02:03 Build Finished. 0 errors, 0 warnings. (took 1s.765ms)
 
