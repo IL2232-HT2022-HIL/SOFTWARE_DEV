@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename resource &apos;MCU_HiL_Board/Core/Src/HiL_mcu_commands&apos; to &apos;HiL_mcu_commands.c&apos;" description="Rename resource &apos;HiL_mcu_commands&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Core/Src/HiL_mcu_commands" name="HiL_mcu_commands.c" stamp="1669884375354" updateReferences="true"/>
-</session>

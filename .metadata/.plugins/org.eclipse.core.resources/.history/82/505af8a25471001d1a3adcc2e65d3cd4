@@ -1,5 +1,0 @@
-
-
-
-
-int HiL_mcu_commands_SHT20_control(int state_selection, int desired_state_value) {

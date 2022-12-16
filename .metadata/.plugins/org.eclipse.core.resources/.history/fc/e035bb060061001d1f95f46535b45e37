@@ -1,8 +1,0 @@
-typedef struct {                                // object data type
-  uint8_t Buf[32];
-  uint8_t Idx;
-} MSGQ_obj;
-
-osMessageQueueId_t UART_get_Q;
-
-int Init_MsgQueue (osMessageQueueId_t Q);
