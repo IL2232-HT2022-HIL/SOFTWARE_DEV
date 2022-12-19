@@ -20,6 +20,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_cortex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_can.h \
+ ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_crc.h \
+ ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_crc_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dac.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dac_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_eth.h \
@@ -58,11 +60,12 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
- /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_controller.h \
- /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_config.h \
- /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_gateway.h \
- /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h \
- /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ.h
+ C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_controller.h \
+ C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_config.h \
+ C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_gateway.h \
+ C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h \
+ C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ.h \
+ ../Core/Inc/setup.h ../Core/Inc/main.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
 ../Core/Inc/stm32f7xx_hal_conf.h:
@@ -85,6 +88,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma_ex.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_cortex.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_can.h:
+../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_crc.h:
+../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_crc_ex.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dac.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dac_ex.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_eth.h:
@@ -124,8 +129,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h:
-/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_controller.h:
-/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_config.h:
-/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_gateway.h:
-/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h:
-/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ.h:
+C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_controller.h:
+C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_config.h:
+C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_gateway.h:
+C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_mcu_commands.h:
+C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ.h:
+../Core/Inc/setup.h:
+../Core/Inc/main.h:

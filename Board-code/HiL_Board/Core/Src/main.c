@@ -27,6 +27,7 @@
 #include "usbd_cdc_if.h"
 #include "HiL_controller.h"
 #include "HiL_MSGQ.h"
+#include "setup.h"
 
 /* USER CODE END Includes */
 
@@ -67,6 +68,8 @@ ETH_DMADescTypeDef DMATxDscrTab[ETH_TX_DESC_CNT] __attribute__((section(".TxDecr
 ETH_TxPacketConfig TxConfig;
 
 CAN_HandleTypeDef hcan1;
+
+CRC_HandleTypeDef hcrc;
 
 DAC_HandleTypeDef hdac;
 
@@ -135,6 +138,7 @@ static void MX_SPI3_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_UART7_Init(void);
 static void MX_DMA_Init(void);
+static void MX_CRC_Init(void);
 void StartDefaultTask(void *argument);
 void StartTask_gateway(void *argument);
 void StartTask_controller(void *argument);
@@ -173,7 +177,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  init_i2c_buffer();
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -185,7 +189,6 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_CAN1_Init();
   MX_DAC_Init();
   MX_ETH_Init();
@@ -194,12 +197,13 @@ int main(void)
   MX_SPI3_Init();
   MX_TIM1_Init();
   MX_UART7_Init();
-
+  MX_DMA_Init();
+  MX_CRC_Init();
   /* USER CODE BEGIN 2 */
 
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
   HAL_UARTEx_ReceiveToIdle_DMA(&huart7, uart_rx_buffer, HIL_UART_BUFFER_SIZE);
-
+  init_i2c_listen();
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -350,6 +354,39 @@ static void MX_CAN1_Init(void)
   /* USER CODE BEGIN CAN1_Init 2 */
 
   /* USER CODE END CAN1_Init 2 */
+
+}
+
+/**
+  * @brief CRC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_CRC_Init(void)
+{
+
+  /* USER CODE BEGIN CRC_Init 0 */
+
+  /* USER CODE END CRC_Init 0 */
+
+  /* USER CODE BEGIN CRC_Init 1 */
+
+  /* USER CODE END CRC_Init 1 */
+  hcrc.Instance = CRC;
+  hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_DISABLE;
+  hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
+  hcrc.Init.GeneratingPolynomial = 305;
+  hcrc.Init.CRCLength = CRC_POLYLENGTH_8B;
+  hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
+  hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+  hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_BYTES;
+  if (HAL_CRC_Init(&hcrc) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN CRC_Init 2 */
+
+  /* USER CODE END CRC_Init 2 */
 
 }
 

@@ -1,0 +1,2 @@
+../Core/Src/setup.c:8:6:init_i2c_buffer	4	static
+../Core/Src/setup.c:18:6:init_i2c_listen	8	static

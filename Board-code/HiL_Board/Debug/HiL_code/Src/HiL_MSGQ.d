@@ -1,5 +1,5 @@
 HiL_code/Src/HiL_MSGQ.o: ../HiL_code/Src/HiL_MSGQ.c \
- /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ.h \
+ C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h \
  ../Core/Inc/FreeRTOSConfig.h \
@@ -11,7 +11,7 @@ HiL_code/Src/HiL_MSGQ.o: ../HiL_code/Src/HiL_MSGQ.c \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
-/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ.h:
+C:/Users/fredr/Documents/HIL_proj/SOFTWARE_DEV/Board-code/HiL_Board/HiL_code/Inc/HiL_MSGQ.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
 ../Core/Inc/FreeRTOSConfig.h:

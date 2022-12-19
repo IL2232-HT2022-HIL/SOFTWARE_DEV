@@ -69,8 +69,8 @@ all: main-build
 main-build: MCU_HiL_Board.elf secondary-outputs
 
 # Tool invocations
-MCU_HiL_Board.elf MCU_HiL_Board.map: $(OBJS) $(USER_OBJS) /Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/STM32F767ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "MCU_HiL_Board.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/Users/Holger/Documents/KTH/Kurser/IL2232/SOFTWARE_DEV/Board-code/HiL_Board/STM32F767ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MCU_HiL_Board.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+MCU_HiL_Board.elf MCU_HiL_Board.map: $(OBJS) $(USER_OBJS) C:\Users\fredr\Documents\HIL_proj\SOFTWARE_DEV\Board-code\HiL_Board\STM32F767ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "MCU_HiL_Board.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\fredr\Documents\HIL_proj\SOFTWARE_DEV\Board-code\HiL_Board\STM32F767ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MCU_HiL_Board.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
