@@ -226,7 +226,7 @@ class RobotFrameworkLib():
 		string_list = instruction.split(" ")
 
 		#Check the length of the string, should be 3
-		if (len(string_list) != 3):
+		if (len(string_list) == 0):
 			raise Exception("Client: Input not correct length, expect 3")
 		
 		#check if object is supported
@@ -304,13 +304,26 @@ if __name__=="__main__":
 
 	
 	obj.open_server()
-	obj.turn_on("TL4_Car")
-	obj.check_if("SW5 is 0")
-	obj.check_if("TL4_Car is 1")
-	obj.turn_off("TL4_Car")
-	obj.check_if("TL4_Car is 0")
-	obj.tune("Poti to 2.3")
-	obj.read_UART()
+
+	obj.tune("Poti to 1.2")
+	obj.turn_on("SW5")
+	obj.turn_on("SW6")
+	obj.turn_on("SW7")
+	obj.turn_on("SW8")
+
+
+	obj.turn_off("SW8")
+	obj.wait("300 milliseconds")
+
+	obj.check_if("UART is hello world!")
+
+	#obj.turn_off("SW6")
+	#obj.turn_off("SW8")
+	#obj.turn_off("SW7")
+	#obj.check_if("SW7 is 0")
+	#obj.check_if("SW8 is 1")
+	
+
 	obj.close_server()	
 	
 	

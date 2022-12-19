@@ -153,7 +153,7 @@ def HiL_client_check_if_instruction(string_list):
 
 	controller_object = string_list[0]
 	object_group = CONTROLLER_OBJECTS[controller_object].object_get_group
-	expected_value_string = string_list[2]
+	expected_value_string = " ".join(string_list[2:])
 	
 	if object_group == "CONTROLLER_GET_GROUP_DATA_STREAMS":
 
