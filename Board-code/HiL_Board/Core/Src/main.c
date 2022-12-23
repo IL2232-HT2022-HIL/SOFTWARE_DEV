@@ -31,6 +31,7 @@
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
+typedef StaticSemaphore_t osStaticSemaphoreDef_t;
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
@@ -76,6 +77,7 @@ I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi3;
+DMA_HandleTypeDef hdma_spi1_rx;
 
 TIM_HandleTypeDef htim1;
 
@@ -117,9 +119,24 @@ const osThreadAttr_t Task_74HC595D_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for LightOnSem */
+osSemaphoreId_t LightOnSemHandle;
+osStaticSemaphoreDef_t LightOnSemControlBlock;
+const osSemaphoreAttr_t LightOnSem_attributes = {
+  .name = "LightOnSem",
+  .cb_mem = &LightOnSemControlBlock,
+  .cb_size = sizeof(LightOnSemControlBlock),
+};
 /* USER CODE BEGIN PV */
 osMessageQueueId_t USB_MSGQ_Rx;
 //osMessageQueueId_t USB_MSGQ_Tx;		//Not currently in use
+
+//Variables for emulated shift registers for LEDs
+uint8_t light_state[] = {0x00, 0x00, 0x00};
+uint8_t temp_light_state[3];
+
+uint32_t shift_reg_event = 0;
+
 
 /* USER CODE END PV */
 
@@ -143,11 +160,57 @@ void StartTask_74HC595D(void *argument);
 
 /* USER CODE BEGIN PFP */
 
+void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi){
+	//printf("hello from spi complete\n\r");
+	//printf("error %ld\n\r", hspi->ErrorCode);
+	osSemaphoreRelease(LightOnSemHandle);
+
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+	//Used to handle reset of the MCU board that is being tested
+
+		uint8_t USBstatus = 231;
+	if(GPIO_Pin & HiL_595_Reset_Pin){
+
+		HAL_StatusTypeDef status;
+
+		//printf("got to reset gpio callback\n\r");
+//		CDC_Transmit_FS( /*(uint8_t *)*/ &USBstatus, sizeof(USBstatus));
+
+		HAL_SPI_DMAStop(&hspi1);
+
+		__HAL_RCC_SPI1_FORCE_RESET();
+		__HAL_RCC_SPI1_RELEASE_RESET();
+
+		MX_SPI1_Init();
+
+		status = HAL_SPI_Receive_DMA(&hspi1, temp_light_state, sizeof(temp_light_state));
+
+//		if (status!=HAL_OK){
+//			printf("return code from dma receive in reset: %d \n\r", rc);
+//		}
+	}
+}
+
+int get_light_state(uint8_t *buffer, int size){
+	//Call this function to get all lights' states
+	//TODO: Describe all 24 bits of led-info abcdefxx ghijklxx mnopqrxx
+	if (size > sizeof(light_state)){
+		size=sizeof(light_state);
+	}
+	memcpy(buffer, light_state, size);
+	return 0;
+}
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 uint8_t uart_rx_buffer[HIL_UART_BUFFER_SIZE];
+
+extern void initialise_monitor_handles(void); //For use with shift register emulation
+
 
 /* USER CODE END 0 */
 
@@ -185,7 +248,9 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+
   MX_DMA_Init();
+
   MX_CAN1_Init();
   MX_DAC_Init();
   MX_ETH_Init();
@@ -194,11 +259,20 @@ int main(void)
   MX_SPI3_Init();
   MX_TIM1_Init();
   MX_UART7_Init();
-
   /* USER CODE BEGIN 2 */
 
+  // ************************************************
+  //	B I G  C A U T I O N !
+  //	MX_DMA_Init(); needs to be before the Init of all other peripherals except GPIO.
+  //	However, MxCube auto generates it to be after the peripherals.
+  //	So whenever a change has been done the .ioc-file and code has been generated, the MX_DMA_Init(); needs to be moved.
+
+  // ************************************************
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
   HAL_UARTEx_ReceiveToIdle_DMA(&huart7, uart_rx_buffer, HIL_UART_BUFFER_SIZE);
+
+  initialise_monitor_handles();		// For use with shift register emulation
+  memset(temp_light_state, 0, sizeof(temp_light_state));
 
   /* USER CODE END 2 */
 
@@ -208,6 +282,10 @@ int main(void)
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
+
+  /* Create the semaphores(s) */
+  /* creation of LightOnSem */
+  LightOnSemHandle = osSemaphoreNew(1, 1, &LightOnSem_attributes);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
@@ -403,6 +481,11 @@ static void MX_ETH_Init(void)
 
   /* USER CODE BEGIN ETH_Init 0 */
 
+		// ****************************************
+
+		// ETHERNET CONFIG IS KEPT DUE TO RESERVATION OF HARDWARE PINS, IF ETHERNET IS TO BE IMPLEMENTED IN THE FUTURE
+
+		// ****************************************
   /* USER CODE END ETH_Init 0 */
 
    static uint8_t MACAddr[6];
@@ -687,11 +770,15 @@ static void MX_DMA_Init(void)
 
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
+  __HAL_RCC_DMA2_CLK_ENABLE();
 
   /* DMA interrupt init */
   /* DMA1_Stream3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
+  /* DMA2_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
 
 }
 
@@ -718,14 +805,14 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(HiL_TL2_Car_GPIO_Port, HiL_TL2_Car_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|HiL_LIS2DW12TR_Int1_Pin|HiL_TL3_Car_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, HiL_SW5_Pin|HiL_SW8_Pin|HiL_SW6_Pin|HiL_SW7_Pin
                           |HiL_LIS2DW12TR_Int2_Pin|LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOG, HiL_button3_B_Pin|HiL_button3_A_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, HiL_LIS2DW12TR_Int1_Pin|HiL_TL3_Car_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(HiL_TL1_Car_GPIO_Port, HiL_TL1_Car_Pin, GPIO_PIN_RESET);
@@ -758,6 +845,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(HiL_USR_LED1_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : PA5 HiL_LIS2DW12TR_Int1_Pin HiL_TL3_Car_Pin */
+  GPIO_InitStruct.Pin = GPIO_PIN_5|HiL_LIS2DW12TR_Int1_Pin|HiL_TL3_Car_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
   /*Configure GPIO pin : HiL_USR_LED2_Pin */
   GPIO_InitStruct.Pin = HiL_USR_LED2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -777,13 +871,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : HiL_LIS2DW12TR_Int1_Pin HiL_TL3_Car_Pin */
-  GPIO_InitStruct.Pin = HiL_LIS2DW12TR_Int1_Pin|HiL_TL3_Car_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : HiL_TL1_Car_Pin */
   GPIO_InitStruct.Pin = HiL_TL1_Car_Pin;
@@ -879,13 +966,13 @@ void StartTask_controller(void *argument)
 	  if( USB_MSGQ_Rx != NULL )
 	  {
 
-			status = osMessageQueueGet(USB_MSGQ_Rx, &msg, NULL, 0U);
+			status = osMessageQueueGet(USB_MSGQ_Rx, &msg, NULL, 0U);		// Try to get message with instructions from USB message queue
 
 			if (status == osOK)
 			{
 				for (int i = 0; i < sizeof(msg.Buf); i++)
 				{
-					recieve_message[i] = msg.Buf[i];					//		Dummy processing of message. Could be in any other task
+					recieve_message[i] = msg.Buf[i];
 				}
 
 				HiL_controller_read_message(recieve_message);
@@ -925,10 +1012,29 @@ void StartTask_SHT20(void *argument)
 void StartTask_74HC595D(void *argument)
 {
   /* USER CODE BEGIN StartTask_74HC595D */
+
+	osStatus status;
+	osSemaphoreAcquire(LightOnSemHandle, 1000);
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+
+	  	  HAL_SPI_Receive_DMA(&hspi1, temp_light_state, sizeof(temp_light_state));
+
+	  again:
+	  	  status = osSemaphoreAcquire(LightOnSemHandle, 2000);
+	  	  if(status != osOK){
+	  		  //printf("acquire failed.\n\r");
+
+	  		  goto again;
+	  	  }
+	  	  memcpy(light_state, temp_light_state, sizeof(light_state));
+//	  	  CDC_Transmit_FS( (uint8_t *) light_state, sizeof(light_state));		// DEBUG ONLY: Transmit over USB what's been recieved to SPI
+	  	 //CDC_Transmit_FS( /*(uint8_t *)*/ light_state[1], sizeof(light_state)[1]);		// DEBUG ONLY: Transmit over USB what's been recieved to SPI
+	  	 //CDC_Transmit_FS( /*(uint8_t *)*/ light_state[2], sizeof(light_state)[2]);		// DEBUG ONLY: Transmit over USB what's been recieved to SPI
+	  	  //printf("Direkt efter semaforen med DMA receive är temp lightstate %02x:%02x:%02x\n\r", temp_light_state[0], temp_light_state[1], temp_light_state[2]);
+
+	  osDelay(1);
   }
   /* USER CODE END StartTask_74HC595D */
 }
