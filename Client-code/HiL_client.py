@@ -149,6 +149,46 @@ def HiL_client_set_humidity_instruction(string_list):
 	python_instruction = "CONTROLLER_REQUEST_SHT20 {} {} {}".format(controller_object,split_integer[0],split_integer[1])
 	return HiL_client_transaction(python_instruction)
 
+
+
+
+def HiL_client_read_shift_register_instruction(controller_object):
+
+	object_group = CONTROLLER_OBJECTS[controller_object].object_get_group
+
+	received_shift_register_state = 0 # every bit, starting from 0 represent a led 
+
+	for frame_index in range(2):
+	
+		python_instruction = "CONTROLLER_REQUEST_GET {} {}".format(object_group,frame_index) #zero indicates reset pointer
+		print(python_instruction) 
+		reply = HiL_client_transaction(python_instruction)
+
+		print(bin(reply))
+
+		transaction_status = (reply >> 12) & 0xff # status code embedded in last 4 bits
+		received_frame = (reply & 0x1ff) # extract 9 led state from frame
+
+		if (transaction_status != 0):
+			return transaction_status, -1
+
+		received_shift_register_state += (received_frame << frame_index*9)
+
+
+	if (CONTROLLER_OBJECTS[controller_object].object_value != 0x1ff):
+		index_to_extract = CONTROLLER_OBJECTS[controller_object].object_value
+
+		if (received_shift_register_state & index_to_extract) == index_to_extract:
+			controller_object_state = bin(1) 
+		else:
+			controller_object_state = bin(0)
+
+	else:
+		controller_object_state = bin(received_shift_register_state)
+
+	return transaction_status, controller_object_state
+
+
 def HiL_client_check_if_instruction(string_list):
 
 	controller_object = string_list[0]
@@ -160,10 +200,23 @@ def HiL_client_check_if_instruction(string_list):
 		if controller_object == "UART":
 			transaction_status, received_value = HiL_client_read_uart_instruction()
 			expected_value = expected_value_string
+	
 		else:
 			transaction_status = 2
 			received_value = 0
 			expected_value = 0
+
+
+	elif object_group == "CONTROLLER_GET_GROUP_TRAFFIC_LIGHTS":
+		
+		#extract shift register content
+		transaction_status, received_value = HiL_client_read_shift_register_instruction(controller_object)
+	
+		if CONTROLLER_OBJECTS[controller_object].object_value != 0x1ff:
+			expected_value = bin(int(expected_value_string))
+		
+		else:
+			expected_value = bin(CONTROLLER_OBJECTS[expected_value_string].object_value)
 
 	else:
 

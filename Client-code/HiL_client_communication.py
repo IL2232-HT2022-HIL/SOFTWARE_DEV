@@ -55,7 +55,7 @@ def HiL_client_communication_transmit(encoded_message):
 def HiL_client_communication_receive():
     
     if VIRTUAL_SERVER: 
-        return [ord('a'),0]
+        return [2,1]
 
     else:
         try:

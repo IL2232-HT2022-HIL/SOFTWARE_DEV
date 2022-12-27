@@ -257,6 +257,11 @@ class RobotFrameworkLib():
 					raise Exception("Client: Wrong reply (expected: {}, given: {})".format(expected_value,actual_value))
 
 
+	def check_logic_expression(self):
+		pass
+
+
+
 	def read_UART (self): 
 	
 		transaction_status,received_uart_string = HiL_client.HiL_client_read_uart_instruction()
@@ -303,27 +308,9 @@ obj = RobotFrameworkLib()
 if __name__=="__main__":
 
 	
-	obj.open_server()
-
-	obj.tune("Poti to 1.2")
-	obj.turn_on("SW5")
-	obj.turn_on("SW6")
-	obj.turn_on("SW7")
-	obj.turn_on("SW8")
-
-
-	obj.turn_off("SW8")
-	obj.wait("300 milliseconds")
-
-	obj.check_if("UART is hello world!")
-
-	#obj.turn_off("SW6")
-	#obj.turn_off("SW8")
-	#obj.turn_off("SW7")
-	#obj.check_if("SW7 is 0")
-	#obj.check_if("SW8 is 1")
 	
-
+	obj.open_server()
+	obj.check_if("TL1_YELLOW is 1")
 	obj.close_server()	
 	
 	
