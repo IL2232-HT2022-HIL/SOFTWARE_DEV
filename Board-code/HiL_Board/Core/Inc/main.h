@@ -51,6 +51,7 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
+void MX_SPI1_Init(void);
 
 /* USER CODE BEGIN EFP */
 
@@ -61,6 +62,7 @@ void Error_Handler(void);
 #define HiL_Disp_Data_Instr_GPIO_Port GPIOE
 #define HiL_595_Reset_Pin GPIO_PIN_15
 #define HiL_595_Reset_GPIO_Port GPIOC
+#define HiL_595_Reset_EXTI_IRQn EXTI15_10_IRQn
 #define HiL_TL2_Car_Pin GPIO_PIN_7
 #define HiL_TL2_Car_GPIO_Port GPIOF
 #define HiL_Disp_Reset_Pin GPIO_PIN_0

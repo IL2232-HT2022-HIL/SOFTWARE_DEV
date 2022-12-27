@@ -11,8 +11,11 @@
 
 extern uint8_t Duty;
 
+extern uint8_t light_state[];
+
 static uint8_t recieved_data[HiL_MSGQ_Buf_arr_len];
 	   uint8_t controller_reply[2];
+	   uint8_t controller_reply2[2];
 
 void HiL_controller_copy_array(uint8_t* to_be_copied)
 {
@@ -28,6 +31,8 @@ void HiL_controller_read_message(uint8_t* recieved_data)
 	//reset status array
 	controller_reply[CONTROLLER_VALUE1] = 0;
 	controller_reply[CONTROLLER_VALUE2] = 0;
+	controller_reply2[CONTROLLER_VALUE1] = 0;
+	controller_reply2[CONTROLLER_VALUE2] = 0;
 
 	// gets newest instruction
 	HiL_controller_copy_array(recieved_data);
@@ -124,6 +129,27 @@ void HiL_controller_send_message()
 
 				HiL_gateway_transmit_message(controller_reply[CONTROLLER_VALUE1],
 										     controller_reply[CONTROLLER_VALUE2]);
+
+				break;
+
+			}
+
+			if (recieved_data[CONTROLLER_GET_OBJECT] == DATA_STREAM_OBJECTS_LIGHTS)
+				// WORK IN PROGRESS
+			{
+
+				controller_reply[CONTROLLER_VALUE1] =  light_state[0];
+				controller_reply[CONTROLLER_VALUE2] =  light_state[1];
+
+
+				controller_reply2[CONTROLLER_VALUE1] =  light_state[2];
+				controller_reply2[CONTROLLER_VALUE2] =  0xff;
+
+				HiL_gateway_transmit_message(controller_reply[CONTROLLER_VALUE1],
+											 controller_reply[CONTROLLER_VALUE2]);
+
+//				HiL_gateway_transmit_message(controller_reply2[CONTROLLER_VALUE1],
+//											 controller_reply2[CONTROLLER_VALUE2]);
 
 				break;
 

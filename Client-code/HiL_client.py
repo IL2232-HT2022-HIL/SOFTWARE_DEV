@@ -71,6 +71,7 @@ def HiL_client_transaction(instrucion_string):
 	if DEBUG_L:
 		print(instrucion_string)
 		print(encoded_message)
+		print(recieved_message_array)
 
 	return transaction_status
 
