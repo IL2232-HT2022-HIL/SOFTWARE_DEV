@@ -306,11 +306,9 @@ class RobotFrameworkLib():
 # The following codes are just for debuging this file
 obj = RobotFrameworkLib()
 if __name__=="__main__":
-
-	
 	
 	obj.open_server()
-	obj.check_if("TL1_YELLOW is 1")
+	obj.check_if("TRAFFIC_LIGHTS are ALL_ON")
 	obj.close_server()	
 	
 	

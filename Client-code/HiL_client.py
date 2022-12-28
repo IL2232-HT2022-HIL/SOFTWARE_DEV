@@ -175,7 +175,7 @@ def HiL_client_read_shift_register_instruction(controller_object):
 		received_shift_register_state += (received_frame << frame_index*9)
 
 
-	if (CONTROLLER_OBJECTS[controller_object].object_value != 0x1ff):
+	if (CONTROLLER_OBJECTS[controller_object].object_value != 100):
 		index_to_extract = CONTROLLER_OBJECTS[controller_object].object_value
 
 		if (received_shift_register_state & index_to_extract) == index_to_extract:
@@ -212,7 +212,7 @@ def HiL_client_check_if_instruction(string_list):
 		#extract shift register content
 		transaction_status, received_value = HiL_client_read_shift_register_instruction(controller_object)
 	
-		if CONTROLLER_OBJECTS[controller_object].object_value != 0x1ff:
+		if CONTROLLER_OBJECTS[controller_object].object_value != 100:
 			expected_value = bin(int(expected_value_string))
 		
 		else:
