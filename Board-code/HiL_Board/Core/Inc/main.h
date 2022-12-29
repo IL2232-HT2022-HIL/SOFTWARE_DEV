@@ -51,7 +51,6 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-void MX_SPI1_Init(void);
 
 /* USER CODE BEGIN EFP */
 
@@ -121,6 +120,8 @@ void MX_SPI1_Init(void);
 #define HiL_button3_center_GPIO_Port GPIOD
 #define HiL_595_DS_Pin GPIO_PIN_7
 #define HiL_595_DS_GPIO_Port GPIOD
+#define HiL_595_SHCP_Pin GPIO_PIN_3
+#define HiL_595_SHCP_GPIO_Port GPIOB
 #define HiL_SW7_Pin GPIO_PIN_4
 #define HiL_SW7_GPIO_Port GPIOB
 #define HiL_LIS2DW12TR_Int2_Pin GPIO_PIN_5

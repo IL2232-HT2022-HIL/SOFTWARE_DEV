@@ -134,28 +134,31 @@ void HiL_controller_send_message()
 
 			}
 
-			if (recieved_data[CONTROLLER_GET_OBJECT] == DATA_STREAM_OBJECTS_LIGHTS)
+		case CONTROLLER_GET_GROUP_TRAFFIC_LIGHTS:
 				// WORK IN PROGRESS
 			{
 
-				controller_reply[CONTROLLER_VALUE1] =  light_state[0];
-				controller_reply[CONTROLLER_VALUE2] =  light_state[1];
+			uint32_t light_state_variable  = light_state[0];
+					 light_state_variable |= light_state[1] << 6;
+					 light_state_variable |= light_state[2] << 12;
+
+			if (recieved_data[CONTROLLER_GET_OBJECT] == 1)
+			{
+				light_state_variable = light_state_variable >> 9;
+			}
+			else // do nothing
+			{}
+
+			controller_reply[CONTROLLER_VALUE1] = light_state_variable & 0xff;
+			controller_reply[CONTROLLER_VALUE2] = (light_state_variable >> 8) & 1;
 
 
-				controller_reply2[CONTROLLER_VALUE1] =  light_state[2];
-				controller_reply2[CONTROLLER_VALUE2] =  0xff;
-
-				HiL_gateway_transmit_message(controller_reply[CONTROLLER_VALUE1],
-											 controller_reply[CONTROLLER_VALUE2]);
-
-//				HiL_gateway_transmit_message(controller_reply2[CONTROLLER_VALUE1],
-//											 controller_reply2[CONTROLLER_VALUE2]);
+			HiL_gateway_transmit_message(controller_reply[CONTROLLER_VALUE1],
+										 controller_reply[CONTROLLER_VALUE2]);
 
 				break;
 
 			}
-			else
-			{}
 
 
 

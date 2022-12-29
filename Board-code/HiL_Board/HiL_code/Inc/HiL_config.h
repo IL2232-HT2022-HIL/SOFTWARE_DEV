@@ -48,10 +48,11 @@
 // -------------------------------------
 // GET GROUPS
 
-#define CONTROLLER_GET_GROUP_BINARY 	  0
-#define CONTROLLER_GET_GROUP_PWM	      1 // Measure PWM duty cycle
-#define CONTROLLER_GET_GROUP_POT_OBJECTS  2
-#define CONTROLLER_GET_GROUP_DATA_STREAMS 3 // Get data from e.g UART or SPI
+#define CONTROLLER_GET_GROUP_BINARY 	  	0
+#define CONTROLLER_GET_GROUP_PWM	      	1 // Measure PWM duty cycle
+#define CONTROLLER_GET_GROUP_POT_OBJECTS  	2
+#define CONTROLLER_GET_GROUP_DATA_STREAMS 	3 // Get data from e.g UART
+#define CONTROLLER_GET_GROUP_TRAFFIC_LIGHTS 4 // Get data from e.g UART or SPI
 
 // -------------------------------------
 // CONTROLLER_OBJECTS

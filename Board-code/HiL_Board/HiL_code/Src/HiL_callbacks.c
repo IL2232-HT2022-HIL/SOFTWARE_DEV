@@ -71,8 +71,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 		__HAL_RCC_SPI1_FORCE_RESET();
 		__HAL_RCC_SPI1_RELEASE_RESET();
 
-		MX_SPI1_Init();		// Very sketchy call. Check if actually calls function from main.
-
+		MX_SPI1_Init();			//Requires that function declaration in main is NOT static!
 		/*status =*/ HAL_SPI_Receive_DMA(&hspi1, temp_light_state, sizeof(temp_light_state));
 
 	}

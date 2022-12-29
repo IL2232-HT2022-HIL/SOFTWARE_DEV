@@ -118,7 +118,8 @@ osMessageQueueId_t USB_MSGQ_Rx;
 //osMessageQueueId_t USB_MSGQ_Tx;		//Not currently in use
 
 //Variables for emulated shift registers for LEDs
-uint8_t light_state[] = {0x00, 0x00, 0x00};
+//uint8_t light_state[3] = {0x00, 0x00, 0x00};
+uint8_t light_state[3] = {0x0f, 0xf0, 0xff};
 
 uint8_t temp_light_state[3];
 
@@ -526,7 +527,7 @@ void MX_SPI1_Init(void)
   hspi1.Instance = SPI1;
   hspi1.Init.Mode = SPI_MODE_SLAVE;
   hspi1.Init.Direction = SPI_DIRECTION_2LINES_RXONLY;
-  hspi1.Init.DataSize = SPI_DATASIZE_4BIT;
+  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
@@ -903,7 +904,10 @@ void StartTask_SHT20(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+
+//	  CDC_Transmit_FS( (uint8_t *) light_state, sizeof(light_state));		// DEBUG ONLY: Transmit over USB what's been received to SPI
+
+    osDelay(1000);
   }
   /* USER CODE END StartTask_SHT20 */
 }
