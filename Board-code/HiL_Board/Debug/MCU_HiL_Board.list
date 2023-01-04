@@ -31,23 +31,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  13 .ARM.attributes 0000002e  00000000  00000000  00030334  2**0
                   CONTENTS, READONLY
- 14 .debug_info   000389de  00000000  00000000  00030362  2**0
+ 14 .debug_info   000389b4  00000000  00000000  00030362  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_abbrev 00007076  00000000  00000000  00068d40  2**0
+ 15 .debug_abbrev 00007058  00000000  00000000  00068d16  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_aranges 000028b0  00000000  00000000  0006fdb8  2**3
+ 16 .debug_aranges 000028a8  00000000  00000000  0006fd70  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_ranges 000025a8  00000000  00000000  00072668  2**3
+ 17 .debug_ranges 000025a0  00000000  00000000  00072618  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_macro  00031f9e  00000000  00000000  00074c10  2**0
+ 18 .debug_macro  00031f9e  00000000  00000000  00074bb8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_line   00036135  00000000  00000000  000a6bae  2**0
+ 19 .debug_line   0003611e  00000000  00000000  000a6b56  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_str    00119fcc  00000000  00000000  000dcce3  2**0
+ 20 .debug_str    00119fcc  00000000  00000000  000dcc74  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .comment      00000050  00000000  00000000  001f6caf  2**0
+ 21 .comment      00000050  00000000  00000000  001f6c40  2**0
                   CONTENTS, READONLY
- 22 .debug_frame  0000ae14  00000000  00000000  001f6d00  2**2
+ 22 .debug_frame  0000adec  00000000  00000000  001f6c90  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1230,9 +1230,9 @@ static void MX_CRC_Init(void)
  8000a16:	4b0d      	ldr	r3, [pc, #52]	; (8000a4c <MX_CRC_Init+0x4c>)
  8000a18:	f240 1231 	movw	r2, #305	; 0x131
  8000a1c:	609a      	str	r2, [r3, #8]
-  hcrc.Init.CRCLength = CRC_POLYLENGTH_8B;
+  hcrc.Init.CRCLength = CRC_POLYLENGTH_16B;
  8000a1e:	4b0b      	ldr	r3, [pc, #44]	; (8000a4c <MX_CRC_Init+0x4c>)
- 8000a20:	2210      	movs	r2, #16
+ 8000a20:	2208      	movs	r2, #8
  8000a22:	60da      	str	r2, [r3, #12]
   hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
  8000a24:	4b09      	ldr	r3, [pc, #36]	; (8000a4c <MX_CRC_Init+0x4c>)

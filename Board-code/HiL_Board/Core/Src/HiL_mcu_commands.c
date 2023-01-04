@@ -20,7 +20,7 @@ __IO uint32_t     Xfer_Complete = 0;
 #define Min_hum 0
 
 #define Max_temp 124.42
-#define Min_temp -39.43
+#define Min_temp -39.42
 
 #define send_temp_h 0xE3
 #define send_temp_nh 0xF3
@@ -32,21 +32,34 @@ uint32_t temperature;
 uint32_t humidity;
 
 
-
+/*
+ * Function to set the temperature and humidity
+ */
 int HiL_mcu_commands_SHT20_control(int state_selection, double desired_state_value){
+	//Check the selection state
 	if(state_selection == Humidity){
+		//Check acceptable value
 		if(desired_state_value < Min_hum && desired_state_value > Max_hum){
 			return 3;
 		}
+		/*
+		 Get correct value for sensor, bit shift to correct position according to data sheet
+		 and add '10' at the end
+		*/
 		double hum = desired_state_value / 0.04;
 		humidity = hum;
 		humidity = (humidity<<4)+2;
 
 	}
 	else if(state_selection == Temperature){
+		//Check acceptable value
 		if(desired_state_value < Min_temp && desired_state_value > Max_temp){
 			return 3;
 		}
+		/*
+		 Get correct value for sensor, bit shift to correct position according to data sheet
+		 and add '10' at the end
+		*/
 		double temp = (desired_state_value + Min_temp) / 0.01;
 		temperature = temp;
 		temperature = (temperature<<2)+2;
@@ -54,11 +67,6 @@ int HiL_mcu_commands_SHT20_control(int state_selection, double desired_state_val
 	else {
 		return 2;
 	}
-	return 0;
-}
-
-
-int crc(int input){
 	return 0;
 }
 
@@ -92,18 +100,20 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *I2cHandle)
   /* Toggle LED4: Transfer in reception process is correct */
 
   Xfer_Complete = 1;
+  //check if humidity or temperature
   if (aRxBuffer[1] == send_temp_h || aRxBuffer[1] == send_temp_nh){
-	  uint8_t crc_val = HAL_CRC_Calculate(&hcrc, &temperature, 1);
-	  aTxBuffer[0] = (temperature>>8) && 0xFF;
-	  aTxBuffer[1] = temperature && 0xFF;
-	  aTxBuffer[2] = crc_val;
+	  uint8_t crc_val = HAL_CRC_Calculate(&hcrc, &temperature, 1); 	//get the crc value
+	  aTxBuffer[0] = (temperature>>8) && 0xFF;						//set MSB
+	  aTxBuffer[1] = temperature && 0xFF;							//set LSB
+	  aTxBuffer[2] = crc_val;										//set crc
   }
   else if (aRxBuffer[1] == send_hum_h || aRxBuffer[1] == send_hum_nh){
-	  uint8_t crc_val = HAL_CRC_Calculate(&hcrc, &humidity, 1);
-	  aTxBuffer[0] = (humidity>>8) && 0xFF;
-	  aTxBuffer[1] = humidity && 0xFF;
-	  aTxBuffer[2] = crc_val;
+	  uint8_t crc_val = HAL_CRC_Calculate(&hcrc, &humidity, 1); 	//get the crc value
+	  aTxBuffer[0] = (humidity>>8) && 0xFF; 						//set MSB
+	  aTxBuffer[1] = humidity && 0xFF;								//set LSB
+	  aTxBuffer[2] = crc_val;										//set crc
   }
+  //reset receive buffer
   aRxBuffer[0]=0x00;
   aRxBuffer[1]=0x00;
   aRxBuffer[2]=0x00;
