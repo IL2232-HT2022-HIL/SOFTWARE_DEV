@@ -52,7 +52,7 @@
 #define CONTROLLER_GET_GROUP_PWM	      	1 // Measure PWM duty cycle
 #define CONTROLLER_GET_GROUP_POT_OBJECTS  	2
 #define CONTROLLER_GET_GROUP_DATA_STREAMS 	3 // Get data from e.g UART
-#define CONTROLLER_GET_GROUP_TRAFFIC_LIGHTS 4 // Get data from e.g UART or SPI
+#define CONTROLLER_GET_GROUP_TRAFFIC_LIGHTS 4 // Get data from SPI for traffic lights.
 
 // -------------------------------------
 // CONTROLLER_OBJECTS
@@ -85,7 +85,6 @@
 // DATA_STREAM_OBJECTS
 #define DATA_STREAM_OBJECTS_UART 	 0
 #define DATA_STREAM_OBJECTS_DISPLAY  1
-#define DATA_STREAM_OBJECTS_LIGHTS   2
 
 
 

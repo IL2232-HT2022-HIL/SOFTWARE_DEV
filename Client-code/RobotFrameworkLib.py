@@ -90,25 +90,30 @@ class RobotFrameworkLib():
 
 		string_list = instruction.split(" ")
 
-		#Check the length of the string, should be 4
-		if (len(string_list) != 4):
+		#Check the length of the string, should be 5
+		if (len(string_list) != 5):
 			raise Exception("Client: Input not correct length, expect 4")
 
 		#check if object is supported
 		elif string_list[0] not in BINARY_OBJECTS:
 			raise Exception("Client: Object is not supported")
 
+		elif string_list[1] not in ["low", "high"]:
+			raise Exception("Client: Logic type is not supported")
 
-		elif string_list[1] != "for":
+		elif string_list[2] != "for":
 			raise Exception("Client: Missing word: for")
 
-
-		elif string_list[3] not in TIME_UNITS:
+		elif string_list[4] not in TIME_UNITS:
 			raise Exception("Client: Time unit is not supported")
 
+
 		else:
-			transaction_status = HiL_client.HiL_client_push_instruction(string_list)
-			
+			if string_list[1] == "high":
+				transaction_status = HiL_client.HiL_client_push_instruction(string_list)
+			else:
+				transaction_status = HiL_client.HiL_client_push_low_instruction(string_list)
+
 			#Server Error Checking
 			if (transaction_status == 1):
 				raise Exception("Server: Non-specified error")
@@ -303,13 +308,78 @@ class RobotFrameworkLib():
 
 
 
-# The following codes are just for debuging this file
+# The following codes are just for debugging this file
 obj = RobotFrameworkLib()
 if __name__=="__main__":
-	
+
 	obj.open_server()
+
+#Simple test of pushing button and reading traffic lights.
+
+		#Default status mode on startup
+
+	obj.wait("200 milliseconds")
+
 	obj.check_if("TRAFFIC_LIGHTS are ALL_ON")
-	obj.close_server()	
+
+	obj.push("button3_center low for 100 milliseconds")
+
+	obj.wait("2 seconds")
+
+
+		#Potentiometer mode
+	obj.check_if("TRAFFIC_LIGHTS are ALL_ON")
+
+	obj.push("button3_center low for 100 milliseconds")
+
+	obj.wait("2 seconds")
+
+
+		#Humidity and temperature mode
+
+	obj.check_if("TRAFFIC_LIGHTS are ALL_ON")
+
+	obj.push("button3_center low for 100 milliseconds")
+
+	obj.wait("7 seconds")
+
+
+		#ENTERS LIGHT MODE but skips the first vertical_green
+
+	obj.check_if("TRAFFIC_LIGHTS are VERTICAL_YELLOW")  # Tl2 & TL4
+
+	obj.wait("3 seconds")
+
+	obj.check_if("TRAFFIC_LIGHTS are ALL_RED")
+
+	obj.wait("3 seconds")
+
+	obj.check_if("TRAFFIC_LIGHTS are HORIZONTAL_YELLOW")  # Tl1 & TL3
+
+	obj.wait("3 seconds")
+
+	obj.check_if("TRAFFIC_LIGHTS are HORIZONTAL_GREEN")  # Tl1 & TL3
+
+	obj.wait("10 seconds")
+
+	obj.check_if("TRAFFIC_LIGHTS are HORIZONTAL_YELLOW")  # Tl1 & TL3
+
+	obj.wait("3 seconds")
+
+	obj.check_if("TRAFFIC_LIGHTS are ALL_RED")
+
+	obj.push("button3_center for 100 milliseconds low")
+
+
+		#Accelerometer mode
+	obj.wait("200 milliseconds")
+	obj.check_if("TRAFFIC_LIGHTS are ALL_ON")
+
+	obj.push("button3_center low for 100 milliseconds")
+
+	obj.wait("100 milliseconds")
+
+	obj.close_server()
 	
 	
 

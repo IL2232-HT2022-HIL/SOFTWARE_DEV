@@ -132,7 +132,7 @@ static void MX_CAN1_Init(void);
 static void MX_DAC_Init(void);
 static void MX_ETH_Init(void);
 static void MX_I2C1_Init(void);
-void MX_SPI1_Init(void);
+static void MX_SPI1_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_UART7_Init(void);
@@ -188,9 +188,6 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-
-  MX_DMA_Init();
-
   MX_CAN1_Init();
   MX_DAC_Init();
   MX_ETH_Init();
@@ -199,6 +196,7 @@ int main(void)
   MX_SPI3_Init();
   MX_TIM1_Init();
   MX_UART7_Init();
+  MX_DMA_Init();
   /* USER CODE BEGIN 2 */
 
   // ************************************************
@@ -513,7 +511,7 @@ static void MX_I2C1_Init(void)
   * @param None
   * @retval None
   */
-void MX_SPI1_Init(void)
+static void MX_SPI1_Init(void)
 {
 
   /* USER CODE BEGIN SPI1_Init 0 */
@@ -743,17 +741,22 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|HiL_LIS2DW12TR_Int1_Pin|HiL_TL3_Car_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, HiL_SW5_Pin|HiL_SW8_Pin|HiL_SW6_Pin|HiL_SW7_Pin
-                          |HiL_LIS2DW12TR_Int2_Pin|LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, HiL_SW5_Pin|HiL_SW8_Pin|HiL_SW6_Pin|HiL_SW7_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOG, HiL_button3_B_Pin|HiL_button3_A_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOG, HiL_button3_B_Pin|HiL_button3_A_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(HiL_TL1_Car_GPIO_Port, HiL_TL1_Car_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, HiL_TL4_Car_Pin|HiL_button3_C_Pin|HiL_button3_D_Pin|HiL_button3_center_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(HiL_TL4_Car_GPIO_Port, HiL_TL4_Car_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOD, HiL_button3_C_Pin|HiL_button3_D_Pin|HiL_button3_center_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, HiL_LIS2DW12TR_Int2_Pin|LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : HiL_Disp_Data_Instr_Pin HiL_Disp_CS_Pin */
   GPIO_InitStruct.Pin = HiL_Disp_Data_Instr_Pin|HiL_Disp_CS_Pin;
@@ -938,7 +941,7 @@ void StartTask_74HC595D(void *argument)
 	  		  goto again;
 	  	  }
 	  	  memcpy(light_state, temp_light_state, sizeof(light_state));
-	  	  CDC_Transmit_FS( (uint8_t *) light_state, sizeof(light_state));		// DEBUG ONLY: Transmit over USB what's been received to SPI
+//	  	  CDC_Transmit_FS( (uint8_t *) light_state, sizeof(light_state));		// DEBUG ONLY: Transmit over USB what's been received to SPI
 	  osDelay(1);
   }
   /* USER CODE END StartTask_74HC595D */
