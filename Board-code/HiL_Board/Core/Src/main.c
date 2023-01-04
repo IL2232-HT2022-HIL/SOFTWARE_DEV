@@ -118,8 +118,7 @@ osMessageQueueId_t USB_MSGQ_Rx;
 //osMessageQueueId_t USB_MSGQ_Tx;		//Not currently in use
 
 //Variables for emulated shift registers for LEDs
-//uint8_t light_state[3] = {0x00, 0x00, 0x00};
-uint8_t light_state[3] = {0x0f, 0xf0, 0xff};
+uint8_t light_state[3] = {0x00, 0x00, 0x00};
 
 uint8_t temp_light_state[3];
 
@@ -132,7 +131,7 @@ static void MX_CAN1_Init(void);
 static void MX_DAC_Init(void);
 static void MX_ETH_Init(void);
 static void MX_I2C1_Init(void);
-static void MX_SPI1_Init(void);
+void MX_SPI1_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_UART7_Init(void);
@@ -142,7 +141,9 @@ void StartTask_SHT20(void *argument);
 void StartTask_74HC595D(void *argument);
 
 /* USER CODE BEGIN PFP */
-		//MX_SPI1_Init(); NEEDS TO BE WITHOUT STATIC KEYWORD.
+
+		// ####### ATTENTION: MX_SPI1_Init(); NEEDS TO BE WITHOUT STATIC KEYWORD.  #######
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -188,6 +189,9 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+
+  MX_DMA_Init();
+
   MX_CAN1_Init();
   MX_DAC_Init();
   MX_ETH_Init();
@@ -196,15 +200,15 @@ int main(void)
   MX_SPI3_Init();
   MX_TIM1_Init();
   MX_UART7_Init();
-  MX_DMA_Init();
   /* USER CODE BEGIN 2 */
 
   // ************************************************
   //	B I G  C A U T I O N !
   //	MX_DMA_Init(); needs to be before the Init of all other peripherals except GPIO.
   //	However, MxCube auto generates it to be after the peripherals.
-  //	So whenever a change has been done the .ioc-file and code has been generated, the MX_DMA_Init();  n e e d s  t o  b e  m o v e d !
-
+  //	So whenever a change has been done the .ioc-file and code has been generated,
+  //    the MX_DMA_Init();  n e e d s  t o  b e  m o v e d !
+  //
   // ************************************************
 
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
@@ -236,7 +240,7 @@ int main(void)
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
 
-  //Initialize the user defined message queues. For e.g. USB RX.
+  //Initialize the user defined message queues. E.g. USB RX.
   HiL_Init_MSGQ();
 
   /* USER CODE END RTOS_QUEUES */
@@ -511,7 +515,7 @@ static void MX_I2C1_Init(void)
   * @param None
   * @retval None
   */
-static void MX_SPI1_Init(void)
+ void MX_SPI1_Init(void)
 {
 
   /* USER CODE BEGIN SPI1_Init 0 */

@@ -13,7 +13,7 @@
 
 
 uint32_t Cnt_full = 0;
-uint32_t Cnt_high = 0;															// Variables for HAL_TIM_IC_CaptureCallback()
+uint32_t Cnt_high = 0;							// Variables for HAL_TIM_IC_CaptureCallback()
 uint8_t Duty = 0;
 
 
