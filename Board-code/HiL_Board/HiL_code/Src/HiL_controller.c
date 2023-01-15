@@ -1,5 +1,5 @@
 /*
- * _controller.c
+ * HiL_controller.c
  *
  *  Created on: Oct 24, 2022
  *      Author: Holger
@@ -15,7 +15,6 @@ extern uint8_t light_state[];
 
 static uint8_t recieved_data[HiL_MSGQ_Buf_arr_len];
 	   uint8_t controller_reply[2];
-	   uint8_t controller_reply2[2];
 
 void HiL_controller_copy_array(uint8_t* to_be_copied)
 {
@@ -31,8 +30,6 @@ void HiL_controller_read_message(uint8_t* recieved_data)
 	//reset status array
 	controller_reply[CONTROLLER_VALUE1] = 0;
 	controller_reply[CONTROLLER_VALUE2] = 0;
-	controller_reply2[CONTROLLER_VALUE1] = 0;
-	controller_reply2[CONTROLLER_VALUE2] = 0;
 
 	// gets newest instruction
 	HiL_controller_copy_array(recieved_data);
@@ -135,7 +132,7 @@ void HiL_controller_send_message()
 			}
 
 		case CONTROLLER_GET_GROUP_TRAFFIC_LIGHTS:
-				// WORK IN PROGRESS
+
 			{
 
 			uint32_t light_state_variable  = light_state[0];
@@ -146,9 +143,7 @@ void HiL_controller_send_message()
 			{
 				light_state_variable = light_state_variable >> 9;
 			}
-			else // do nothing
-			{}
-
+					//Compacting the data to take away the don't care conditions.
 			controller_reply[CONTROLLER_VALUE1] = light_state_variable & 0xff;
 			controller_reply[CONTROLLER_VALUE2] = (light_state_variable >> 8) & 1;
 

@@ -103,8 +103,8 @@ def HiL_client_wait_instruction(string_list):
 def HiL_client_push_instruction(string_list):
 
 	binary_object = string_list[0]
-	wait_time     = float(string_list[2])
-	time_unit     = string_list[3]
+	wait_time     = float(string_list[3])
+	time_unit     = string_list[4]
 
 	transaction_status = HiL_client_turn_on_instruction(binary_object)
 
@@ -123,8 +123,8 @@ def HiL_client_push_instruction(string_list):
 def HiL_client_push_low_instruction(string_list):
 		#Active low version of the push instruction
 	binary_object = string_list[0]
-	wait_time     = float(string_list[2])
-	time_unit     = string_list[3]
+	wait_time     = float(string_list[3])
+	time_unit     = string_list[4]
 
 	transaction_status = HiL_client_turn_off_instruction(binary_object)
 

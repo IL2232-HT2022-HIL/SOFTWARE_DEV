@@ -89,7 +89,6 @@ class RobotFrameworkLib():
 	def push (self,instruction):
 
 		string_list = instruction.split(" ")
-
 		#Check the length of the string, should be 5
 		if (len(string_list) != 5):
 			raise Exception("Client: Input not correct length, expect 4")
@@ -314,9 +313,8 @@ if __name__=="__main__":
 
 	obj.open_server()
 
-#Simple test of pushing button and reading traffic lights.
-
-		#Default status mode on startup
+	# Simple test of pushing button and reading traffic lights.
+	# Default status mode on startup
 
 	obj.wait("200 milliseconds")
 
@@ -324,18 +322,16 @@ if __name__=="__main__":
 
 	obj.push("button3_center low for 100 milliseconds")
 
-	obj.wait("2 seconds")
+	obj.close_server()
 
-
-		#Potentiometer mode
+	# Potentiometer mode
 	obj.check_if("TRAFFIC_LIGHTS are ALL_ON")
 
 	obj.push("button3_center low for 100 milliseconds")
 
 	obj.wait("2 seconds")
 
-
-		#Humidity and temperature mode
+	# Humidity and temperature mode
 
 	obj.check_if("TRAFFIC_LIGHTS are ALL_ON")
 
@@ -343,8 +339,7 @@ if __name__=="__main__":
 
 	obj.wait("7 seconds")
 
-
-		#ENTERS LIGHT MODE but skips the first vertical_green
+	# ENTERS LIGHT MODE but skips the first vertical_green
 
 	obj.check_if("TRAFFIC_LIGHTS are VERTICAL_YELLOW")  # Tl2 & TL4
 
@@ -368,18 +363,48 @@ if __name__=="__main__":
 
 	obj.check_if("TRAFFIC_LIGHTS are ALL_RED")
 
-	obj.push("button3_center for 100 milliseconds low")
-
-
-		#Accelerometer mode
-	obj.wait("200 milliseconds")
-	obj.check_if("TRAFFIC_LIGHTS are ALL_ON")
-
 	obj.push("button3_center low for 100 milliseconds")
 
-	obj.wait("100 milliseconds")
+	obj.close_server()
+
+	#Test read UART
+
+	obj.wait("200 milliseconds")
+	obj.read_UART()
 
 	obj.close_server()
+
+	#Test binary GPIO checks
+
+	obj.wait("200 milliseconds")
+	obj.check_if("USR_LED2 is 1")
+
+	obj.close_server()
+
+	#Test PWM measurement
+
+	obj.wait("200 milliseconds")
+	obj.tune("Poti to 1.67")		# 1.67 is Vdd/2 -> 50 % duty cycle
+									# duty cycle = 100*(3.3-poti value)/3.3
+
+	obj.check_if("PWM_MEASUREMENT are 50")  # duty cycle = 100*(3.3-poti value)/3.3
+
+	obj.close_server()
+
+
+	#Turn on test
+
+	obj.wait("200 milliseconds")
+
+	obj.push("button3_D high for 200 milliseconds")
+
+	obj.wait("200 milliseconds")
+
+	obj.turn_on("button3_A")
+
+	obj.close_server()
+
+
 	
 	
 

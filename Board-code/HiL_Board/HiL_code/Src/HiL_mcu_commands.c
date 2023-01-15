@@ -1,8 +1,10 @@
 /*
- * user_commands.c
+ * HiL_mcu_commands.c
  *
  *  Created on: Oct 24, 2022
  *      Author: Holger Stenberg
+ *
+ *  	This file collects hardwares specific actions
  */
 
 
@@ -106,6 +108,7 @@ uint8_t HiL_mcu_commands_binary_action (uint8_t binary_object, uint8_t desired_s
 			HAL_GPIO_WritePin(HiL_TL4_Car_GPIO_Port, HiL_TL4_Car_Pin, pin_state);
 			break;
 
+
 		default:
 			return CONTROLLER_ERROR_NO_SUPPORT; // Switch not currently supported
 
@@ -171,11 +174,11 @@ uint8_t HiL_mcu_commands_PWM_measure ()
 		HAL_TIM_IC_Start_IT(&htim1, TIM_CHANNEL_1); // Primary channel - rising edge - rinse and repeat
 		HAL_TIM_IC_Start(&htim1, TIM_CHANNEL_2);    // Secondary channel - falling edge - stop second counter
 
-		osDelay(1);				//	Wait for  pwm-period to complete. Smallest tick time is currently 1 millisecond. PWM freq is 8 kHz, so this is slow enough.
+		osDelay(1);									//	Wait for PWM-period to complete. Smallest tick time is currently 1 millisecond. IS1300 PWM freq is 8 kHz, so this is slow enough.
 
-												   // Stop timers and interrupts
-		HAL_TIM_IC_Stop_IT(&htim1, TIM_CHANNEL_1); // Primary channel - rising edge - rinse and repeat
-		HAL_TIM_IC_Stop(&htim1, TIM_CHANNEL_2);    // Secondary channel - falling edge - stop second counter
+												   	// Stop timers and interrupts
+		HAL_TIM_IC_Stop_IT(&htim1, TIM_CHANNEL_1);  // Primary channel - rising edge - rinse and repeat
+		HAL_TIM_IC_Stop(&htim1, TIM_CHANNEL_2);     // Secondary channel - falling edge - stop second counter
 
 		return Duty;
 }

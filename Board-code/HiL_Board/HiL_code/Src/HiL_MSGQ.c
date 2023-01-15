@@ -11,7 +11,7 @@
 #include "HiL_MSGQ.h"
 
 extern osMessageQueueId_t USB_MSGQ_Rx;
-//extern osMessageQueueId_t USB_MSGQ_Tx;
+//extern osMessageQueueId_t USB_MSGQ_Tx;		//Not currently in use.
 
 uint8_t HiL_Init_MSGQ (void) {
 
@@ -19,7 +19,7 @@ uint8_t HiL_Init_MSGQ (void) {
   if (USB_MSGQ_Rx == NULL) {
 	  return -1;
   }
-//  USB_MSGQ_Tx = osMessageQueueNew(10, sizeof(MSGQ_obj), NULL);
+//  USB_MSGQ_Tx = osMessageQueueNew(HiL_USB_MSQG_len, sizeof(MSGQ_obj), NULL);
 //    if (USB_MSGQ_Tx == NULL) {
 //  	  return -1;
 //    }

@@ -515,10 +515,12 @@ static void MX_I2C1_Init(void)
   * @param None
   * @retval None
   */
- void MX_SPI1_Init(void)
+void MX_SPI1_Init(void)
 {
 
   /* USER CODE BEGIN SPI1_Init 0 */
+
+	 // ####### ATTENTION: MX_SPI1_Init(); NEEDS TO BE WITHOUT STATIC KEYWORD.  #######
 
   /* USER CODE END SPI1_Init 0 */
 
@@ -887,10 +889,10 @@ void StartTask_controller(void *argument)
 	 			{
 	 				for (int i = 0; i < sizeof(msg.Buf); i++)
 	 				{
-	 					recieve_message[i] = msg.Buf[i];					//		Dummy processing of message. Could be in any other task
+	 					recieve_message[i] = msg.Buf[i];						//Copy message
 	 				}
 
-	 				HiL_controller_read_message(recieve_message);
+	 				HiL_controller_read_message(recieve_message);				//Process request
 	 			}
 	 	  }
 	  osDelay(10);
@@ -912,9 +914,7 @@ void StartTask_SHT20(void *argument)
   for(;;)
   {
 
-//	  CDC_Transmit_FS( (uint8_t *) light_state, sizeof(light_state));		// DEBUG ONLY: Transmit over USB what's been received to SPI
-
-    osDelay(1000);
+    osDelay(1000);							//Not implemented.
   }
   /* USER CODE END StartTask_SHT20 */
 }
@@ -945,8 +945,7 @@ void StartTask_74HC595D(void *argument)
 	  		  goto again;
 	  	  }
 	  	  memcpy(light_state, temp_light_state, sizeof(light_state));
-//	  	  CDC_Transmit_FS( (uint8_t *) light_state, sizeof(light_state));		// DEBUG ONLY: Transmit over USB what's been received to SPI
-	  osDelay(1);
+	  osDelay(10);
   }
   /* USER CODE END StartTask_74HC595D */
 }

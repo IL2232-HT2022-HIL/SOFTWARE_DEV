@@ -72,6 +72,10 @@
 #define HiL_TL3_Car        11
 #define HiL_TL4_Car        12
 
+#define USR_LED1		   13
+#define USR_LED2		   14
+
+
 // SHT20_OBJECTS
 #define HiL_SHT20_TEMPERATURE 0 
 #define HiL_SHT20_HUMIDITY    1 

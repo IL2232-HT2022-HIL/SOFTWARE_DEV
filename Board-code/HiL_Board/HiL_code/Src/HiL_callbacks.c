@@ -27,14 +27,14 @@ extern void MX_SPI1_Init();
 
 
 
-void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {						// Timer callback code on interrupts from rising and falling edges
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {						// Timer callback code on interrupts from rising edges
 	if (htim->Instance == TIM1) {
 		// Used for duty cycle measurements
 
-		//#define TIMER_CLOCK_FREQ 96000000 // APB2 Timer Clock. With 96 MHz, 16 bit res -> Reload/wraparound freq @ 732 Hz
-																				// -> Tested lowest measureable pwm freq is 1.7 kHz
+		// APB2 Timer Clock. With 96 MHz, 16 bit res -> Reload/wraparound freq @ 1464 Hz
+												  // -> Tested lowest reliably measureable pwm freq is 1.7 kHz
 
-		Cnt_full = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1) + 1;
+		Cnt_full = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1) + 1;			//+1 to avoid possible division by 0 in duty cycle calculation.
 		Cnt_high = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
 
 		Duty =  100 * Cnt_high / Cnt_full;
@@ -64,7 +64,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 
 	if(GPIO_Pin & HiL_595_Reset_Pin){
 
-//		HAL_StatusTypeDef status;
 
 		HAL_SPI_DMAStop(&hspi1);
 
@@ -72,7 +71,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 		__HAL_RCC_SPI1_RELEASE_RESET();
 
 		MX_SPI1_Init();			//Requires that function declaration in main is NOT static!
-		/*status =*/ HAL_SPI_Receive_DMA(&hspi1, temp_light_state, sizeof(temp_light_state));
+		HAL_SPI_Receive_DMA(&hspi1, temp_light_state, sizeof(temp_light_state));
 
 	}
 }
