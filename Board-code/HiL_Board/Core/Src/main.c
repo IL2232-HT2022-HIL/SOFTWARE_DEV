@@ -31,6 +31,7 @@
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
+typedef StaticSemaphore_t osStaticSemaphoreDef_t;
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
@@ -76,26 +77,13 @@ I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi3;
+DMA_HandleTypeDef hdma_spi1_rx;
 
 TIM_HandleTypeDef htim1;
 
 UART_HandleTypeDef huart7;
 DMA_HandleTypeDef hdma_uart7_rx;
 
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
-/* Definitions for Task_gateway */
-osThreadId_t Task_gatewayHandle;
-const osThreadAttr_t Task_gateway_attributes = {
-  .name = "Task_gateway",
-  .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
 /* Definitions for Task_controller */
 osThreadId_t Task_controllerHandle;
 const osThreadAttr_t Task_controller_attributes = {
@@ -117,9 +105,22 @@ const osThreadAttr_t Task_74HC595D_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for LightOnSem */
+osSemaphoreId_t LightOnSemHandle;
+osStaticSemaphoreDef_t LightOnSemControlBlock;
+const osSemaphoreAttr_t LightOnSem_attributes = {
+  .name = "LightOnSem",
+  .cb_mem = &LightOnSemControlBlock,
+  .cb_size = sizeof(LightOnSemControlBlock),
+};
 /* USER CODE BEGIN PV */
 osMessageQueueId_t USB_MSGQ_Rx;
 //osMessageQueueId_t USB_MSGQ_Tx;		//Not currently in use
+
+//Variables for emulated shift registers for LEDs
+uint8_t light_state[3] = {0x00, 0x00, 0x00};
+
+uint8_t temp_light_state[3];
 
 /* USER CODE END PV */
 
@@ -130,24 +131,26 @@ static void MX_CAN1_Init(void);
 static void MX_DAC_Init(void);
 static void MX_ETH_Init(void);
 static void MX_I2C1_Init(void);
-static void MX_SPI1_Init(void);
+void MX_SPI1_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_UART7_Init(void);
 static void MX_DMA_Init(void);
-void StartDefaultTask(void *argument);
-void StartTask_gateway(void *argument);
 void StartTask_controller(void *argument);
 void StartTask_SHT20(void *argument);
 void StartTask_74HC595D(void *argument);
 
 /* USER CODE BEGIN PFP */
 
+		// ####### ATTENTION: MX_SPI1_Init(); NEEDS TO BE WITHOUT STATIC KEYWORD.  #######
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 uint8_t uart_rx_buffer[HIL_UART_BUFFER_SIZE];
+
+//extern void initialise_monitor_handles(void); //Enables the use of printf-statements. Has to be called as well.
 
 /* USER CODE END 0 */
 
@@ -173,6 +176,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
+  memset(temp_light_state, 0, sizeof(temp_light_state));		// Set all to 0.
 
   /* USER CODE END Init */
 
@@ -185,7 +189,9 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+
   MX_DMA_Init();
+
   MX_CAN1_Init();
   MX_DAC_Init();
   MX_ETH_Init();
@@ -194,11 +200,21 @@ int main(void)
   MX_SPI3_Init();
   MX_TIM1_Init();
   MX_UART7_Init();
-
   /* USER CODE BEGIN 2 */
+
+  // ************************************************
+  //	B I G  C A U T I O N !
+  //	MX_DMA_Init(); needs to be before the Init of all other peripherals except GPIO.
+  //	However, MxCube auto generates it to be after the peripherals.
+  //	So whenever a change has been done the .ioc-file and code has been generated,
+  //    the MX_DMA_Init();  n e e d s  t o  b e  m o v e d !
+  //
+  // ************************************************
 
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
   HAL_UARTEx_ReceiveToIdle_DMA(&huart7, uart_rx_buffer, HIL_UART_BUFFER_SIZE);
+
+//  initialise_monitor_handles();		//Enables the use of printf-statements. Use for debug.
 
   /* USER CODE END 2 */
 
@@ -208,6 +224,10 @@ int main(void)
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
+
+  /* Create the semaphores(s) */
+  /* creation of LightOnSem */
+  LightOnSemHandle = osSemaphoreNew(1, 1, &LightOnSem_attributes);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
@@ -220,17 +240,12 @@ int main(void)
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
 
+  //Initialize the user defined message queues. E.g. USB RX.
   HiL_Init_MSGQ();
 
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
-
-  /* creation of Task_gateway */
-  Task_gatewayHandle = osThreadNew(StartTask_gateway, NULL, &Task_gateway_attributes);
-
   /* creation of Task_controller */
   Task_controllerHandle = osThreadNew(StartTask_controller, NULL, &Task_controller_attributes);
 
@@ -403,6 +418,11 @@ static void MX_ETH_Init(void)
 
   /* USER CODE BEGIN ETH_Init 0 */
 
+		// ****************************************
+
+		// ETHERNET CONFIG IS KEPT DUE TO RESERVATION OF HARDWARE PINS, IF ETHERNET IS TO BE IMPLEMENTED IN THE FUTURE
+
+		// ****************************************
   /* USER CODE END ETH_Init 0 */
 
    static uint8_t MACAddr[6];
@@ -495,10 +515,12 @@ static void MX_I2C1_Init(void)
   * @param None
   * @retval None
   */
-static void MX_SPI1_Init(void)
+void MX_SPI1_Init(void)
 {
 
   /* USER CODE BEGIN SPI1_Init 0 */
+
+	 // ####### ATTENTION: MX_SPI1_Init(); NEEDS TO BE WITHOUT STATIC KEYWORD.  #######
 
   /* USER CODE END SPI1_Init 0 */
 
@@ -509,7 +531,7 @@ static void MX_SPI1_Init(void)
   hspi1.Instance = SPI1;
   hspi1.Init.Mode = SPI_MODE_SLAVE;
   hspi1.Init.Direction = SPI_DIRECTION_2LINES_RXONLY;
-  hspi1.Init.DataSize = SPI_DATASIZE_4BIT;
+  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
@@ -687,11 +709,15 @@ static void MX_DMA_Init(void)
 
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
+  __HAL_RCC_DMA2_CLK_ENABLE();
 
   /* DMA interrupt init */
   /* DMA1_Stream3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
+  /* DMA2_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
 
 }
 
@@ -718,20 +744,25 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(HiL_TL2_Car_GPIO_Port, HiL_TL2_Car_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, HiL_SW5_Pin|HiL_SW8_Pin|HiL_SW6_Pin|HiL_SW7_Pin
-                          |HiL_LIS2DW12TR_Int2_Pin|LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|HiL_LIS2DW12TR_Int1_Pin|HiL_TL3_Car_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOG, HiL_button3_B_Pin|HiL_button3_A_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, HiL_SW5_Pin|HiL_SW8_Pin|HiL_SW6_Pin|HiL_SW7_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, HiL_LIS2DW12TR_Int1_Pin|HiL_TL3_Car_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOG, HiL_button3_B_Pin|HiL_button3_A_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(HiL_TL1_Car_GPIO_Port, HiL_TL1_Car_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, HiL_TL4_Car_Pin|HiL_button3_C_Pin|HiL_button3_D_Pin|HiL_button3_center_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(HiL_TL4_Car_GPIO_Port, HiL_TL4_Car_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOD, HiL_button3_C_Pin|HiL_button3_D_Pin|HiL_button3_center_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, HiL_LIS2DW12TR_Int2_Pin|LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : HiL_Disp_Data_Instr_Pin HiL_Disp_CS_Pin */
   GPIO_InitStruct.Pin = HiL_Disp_Data_Instr_Pin|HiL_Disp_CS_Pin;
@@ -739,11 +770,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : HiL_595_Reset_Pin HiL_Disp_Reset_Pin HiL_595_STCP_Pin */
-  GPIO_InitStruct.Pin = HiL_595_Reset_Pin|HiL_Disp_Reset_Pin|HiL_595_STCP_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  /*Configure GPIO pin : HiL_595_Reset_Pin */
+  GPIO_InitStruct.Pin = HiL_595_Reset_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(HiL_595_Reset_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : HiL_TL2_Car_Pin */
   GPIO_InitStruct.Pin = HiL_TL2_Car_Pin;
@@ -752,11 +783,24 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(HiL_TL2_Car_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : HiL_Disp_Reset_Pin HiL_595_STCP_Pin */
+  GPIO_InitStruct.Pin = HiL_Disp_Reset_Pin|HiL_595_STCP_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
   /*Configure GPIO pin : HiL_USR_LED1_Pin */
   GPIO_InitStruct.Pin = HiL_USR_LED1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(HiL_USR_LED1_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA5 HiL_LIS2DW12TR_Int1_Pin HiL_TL3_Car_Pin */
+  GPIO_InitStruct.Pin = GPIO_PIN_5|HiL_LIS2DW12TR_Int1_Pin|HiL_TL3_Car_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : HiL_USR_LED2_Pin */
   GPIO_InitStruct.Pin = HiL_USR_LED2_Pin;
@@ -777,13 +821,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : HiL_LIS2DW12TR_Int1_Pin HiL_TL3_Car_Pin */
-  GPIO_InitStruct.Pin = HiL_LIS2DW12TR_Int1_Pin|HiL_TL3_Car_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : HiL_TL1_Car_Pin */
   GPIO_InitStruct.Pin = HiL_TL1_Car_Pin;
@@ -813,49 +850,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+
 }
 
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
-
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
-{
-  /* init code for USB_DEVICE */
-  MX_USB_DEVICE_Init();
-  /* USER CODE BEGIN 5 */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END 5 */
-}
-
-/* USER CODE BEGIN Header_StartTask_gateway */
-/**
-* @brief Function implementing the Task_gateway thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartTask_gateway */
-void StartTask_gateway(void *argument)
-{
-  /* USER CODE BEGIN StartTask_gateway */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END StartTask_gateway */
-}
 
 /* USER CODE BEGIN Header_StartTask_controller */
 /**
@@ -866,8 +869,10 @@ void StartTask_gateway(void *argument)
 /* USER CODE END Header_StartTask_controller */
 void StartTask_controller(void *argument)
 {
-  /* USER CODE BEGIN StartTask_controller */
-  /* Infinite loop */
+  /* init code for USB_DEVICE */
+  MX_USB_DEVICE_Init();
+  /* USER CODE BEGIN 5 */
+
   MSGQ_obj msg;
   osStatus status;
   uint8_t recieve_message[4];
@@ -875,26 +880,24 @@ void StartTask_controller(void *argument)
   /* Infinite loop */
   for(;;)
   {
-
 	  if( USB_MSGQ_Rx != NULL )
-	  {
+	 	  {
 
-			status = osMessageQueueGet(USB_MSGQ_Rx, &msg, NULL, 0U);
+	 			status = osMessageQueueGet(USB_MSGQ_Rx, &msg, NULL, 0U);		// Try to get message with instructions from USB message queue
 
-			if (status == osOK)
-			{
-				for (int i = 0; i < sizeof(msg.Buf); i++)
-				{
-					recieve_message[i] = msg.Buf[i];					//		Dummy processing of message. Could be in any other task
-				}
+	 			if (status == osOK)
+	 			{
+	 				for (int i = 0; i < sizeof(msg.Buf); i++)
+	 				{
+	 					recieve_message[i] = msg.Buf[i];						//Copy message
+	 				}
 
-				HiL_controller_read_message(recieve_message);
-			}
-	  }
-
+	 				HiL_controller_read_message(recieve_message);				//Process request
+	 			}
+	 	  }
 	  osDelay(10);
   }
-  /* USER CODE END StartTask_controller */
+  /* USER CODE END 5 */
 }
 
 /* USER CODE BEGIN Header_StartTask_SHT20 */
@@ -910,7 +913,8 @@ void StartTask_SHT20(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+
+    osDelay(1000);							//Not implemented.
   }
   /* USER CODE END StartTask_SHT20 */
 }
@@ -925,10 +929,23 @@ void StartTask_SHT20(void *argument)
 void StartTask_74HC595D(void *argument)
 {
   /* USER CODE BEGIN StartTask_74HC595D */
+	osStatus status;
+	osSemaphoreAcquire(LightOnSemHandle, 1000);
+
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+
+	  HAL_SPI_Receive_DMA(&hspi1, temp_light_state, sizeof(temp_light_state));
+
+	  again:
+	  	  status = osSemaphoreAcquire(LightOnSemHandle, 2000);
+	  	  if(status != osOK){
+
+	  		  goto again;
+	  	  }
+	  	  memcpy(light_state, temp_light_state, sizeof(light_state));
+	  osDelay(10);
   }
   /* USER CODE END StartTask_74HC595D */
 }

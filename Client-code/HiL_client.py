@@ -71,6 +71,7 @@ def HiL_client_transaction(instrucion_string):
 	if DEBUG_L:
 		print(instrucion_string)
 		print(encoded_message)
+		print(recieved_message_array)
 
 	return transaction_status
 
@@ -102,8 +103,8 @@ def HiL_client_wait_instruction(string_list):
 def HiL_client_push_instruction(string_list):
 
 	binary_object = string_list[0]
-	wait_time     = float(string_list[2])
-	time_unit     = string_list[3]
+	wait_time     = float(string_list[3])
+	time_unit     = string_list[4]
 
 	transaction_status = HiL_client_turn_on_instruction(binary_object)
 
@@ -111,12 +112,32 @@ def HiL_client_push_instruction(string_list):
 		return transaction_status # something bad happened, return error code
 
 
-	print("Pushing {} for {} {}...".format(binary_object, wait_time, time_unit))
+	print("Pushing {} high for {} {}...".format(binary_object, wait_time, time_unit))
 	sleep_time = wait_time / (TIME_UNITS[time_unit])
 	time.sleep(sleep_time)
 
 
 	transaction_status = HiL_client_turn_off_instruction(binary_object)
+	return transaction_status
+
+def HiL_client_push_low_instruction(string_list):
+		#Active low version of the push instruction
+	binary_object = string_list[0]
+	wait_time     = float(string_list[3])
+	time_unit     = string_list[4]
+
+	transaction_status = HiL_client_turn_off_instruction(binary_object)
+
+	if transaction_status is not OK:
+		return transaction_status # something bad happened, return error code
+
+
+	print("Pushing {} low for {} {}...".format(binary_object, wait_time, time_unit))
+	sleep_time = wait_time / (TIME_UNITS[time_unit])
+	time.sleep(sleep_time)
+
+	transaction_status = HiL_client_turn_on_instruction(binary_object)
+
 	return transaction_status
 
 

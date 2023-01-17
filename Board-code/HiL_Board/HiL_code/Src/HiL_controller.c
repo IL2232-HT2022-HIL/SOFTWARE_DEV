@@ -1,5 +1,5 @@
 /*
- * _controller.c
+ * HiL_controller.c
  *
  *  Created on: Oct 24, 2022
  *      Author: Holger
@@ -10,6 +10,8 @@
 #include "HiL_MSGQ.h"
 
 extern uint8_t Duty;
+
+extern uint8_t light_state[];
 
 static uint8_t recieved_data[HiL_MSGQ_Buf_arr_len];
 	   uint8_t controller_reply[2];
@@ -128,8 +130,30 @@ void HiL_controller_send_message()
 				break;
 
 			}
-			else
-			{}
+
+		case CONTROLLER_GET_GROUP_TRAFFIC_LIGHTS:
+
+			{
+
+			uint32_t light_state_variable  = light_state[0];
+					 light_state_variable |= light_state[1] << 6;
+					 light_state_variable |= light_state[2] << 12;
+
+			if (recieved_data[CONTROLLER_GET_OBJECT] == 1)
+			{
+				light_state_variable = light_state_variable >> 9;
+			}
+					//Compacting the data to take away the don't care conditions.
+			controller_reply[CONTROLLER_VALUE1] = light_state_variable & 0xff;
+			controller_reply[CONTROLLER_VALUE2] = (light_state_variable >> 8) & 1;
+
+
+			HiL_gateway_transmit_message(controller_reply[CONTROLLER_VALUE1],
+										 controller_reply[CONTROLLER_VALUE2]);
+
+				break;
+
+			}
 
 
 

@@ -19,7 +19,6 @@
 
 typedef struct {                                // Message object data type
   uint8_t Buf[HiL_MSGQ_Buf_arr_len];
-  //uint8_t Idx;
 } MSGQ_obj;
 
 uint8_t HiL_Init_MSGQ();						// Starts up the message queues in use.

@@ -12,13 +12,10 @@
 #define CONTROLLER_INFO 0
 
 
-
 // -------------------------------------
 // BUFFER SIZES
 
 #define HIL_UART_BUFFER_SIZE 128
-
-
 
 
 // -------------------------------------
@@ -42,18 +39,20 @@
 // -------------------------------------
 // CONTROLLER_REQUESTS
 
-#define CONTROLLER_REQUEST_GET            0 // get data from server
-#define CONTROLLER_REQUEST_ACTUATE        1 // button/switch stimuli
-#define CONTROLLER_REQUEST_POTENTIOMETER  2 // potentiometer emulation
+#define CONTROLLER_REQUEST_GET            0 // Get data from server
+#define CONTROLLER_REQUEST_ACTUATE        1 // Button/switch stimuli
+#define CONTROLLER_REQUEST_POTENTIOMETER  2 // Potentiometer emulation
 #define CONTROLLER_REQUEST_SHT20          3 // SHT20 emulator stimuli
 
 
 // -------------------------------------
 // GET GROUPS
 
-#define CONTROLLER_GET_GROUP_BINARY 	  0
-#define CONTROLLER_GET_GROUP_PWM	      1 // Measure PWM duty cycle
-#define CONTROLLER_GET_GROUP_DATA_STREAMS 3
+#define CONTROLLER_GET_GROUP_BINARY 	  	0
+#define CONTROLLER_GET_GROUP_PWM	      	1 // Measure PWM duty cycle
+#define CONTROLLER_GET_GROUP_POT_OBJECTS  	2
+#define CONTROLLER_GET_GROUP_DATA_STREAMS 	3 // Get data from e.g UART
+#define CONTROLLER_GET_GROUP_TRAFFIC_LIGHTS 4 // Get data from SPI for traffic lights.
 
 // -------------------------------------
 // CONTROLLER_OBJECTS
@@ -73,6 +72,10 @@
 #define HiL_TL3_Car        11
 #define HiL_TL4_Car        12
 
+#define USR_LED1		   13
+#define USR_LED2		   14
+
+
 // SHT20_OBJECTS
 #define HiL_SHT20_TEMPERATURE 0 
 #define HiL_SHT20_HUMIDITY    1 
@@ -84,7 +87,8 @@
 #define PWM_MEASUREMENT 0
 
 // DATA_STREAM_OBJECTS
-#define DATA_STREAM_OBJECTS_UART 0
+#define DATA_STREAM_OBJECTS_UART 	 0
+#define DATA_STREAM_OBJECTS_DISPLAY  1
 
 
 

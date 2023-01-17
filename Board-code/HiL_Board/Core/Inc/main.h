@@ -61,6 +61,7 @@ void Error_Handler(void);
 #define HiL_Disp_Data_Instr_GPIO_Port GPIOE
 #define HiL_595_Reset_Pin GPIO_PIN_15
 #define HiL_595_Reset_GPIO_Port GPIOC
+#define HiL_595_Reset_EXTI_IRQn EXTI15_10_IRQn
 #define HiL_TL2_Car_Pin GPIO_PIN_7
 #define HiL_TL2_Car_GPIO_Port GPIOF
 #define HiL_Disp_Reset_Pin GPIO_PIN_0
@@ -119,6 +120,8 @@ void Error_Handler(void);
 #define HiL_button3_center_GPIO_Port GPIOD
 #define HiL_595_DS_Pin GPIO_PIN_7
 #define HiL_595_DS_GPIO_Port GPIOD
+#define HiL_595_SHCP_Pin GPIO_PIN_3
+#define HiL_595_SHCP_GPIO_Port GPIOB
 #define HiL_SW7_Pin GPIO_PIN_4
 #define HiL_SW7_GPIO_Port GPIOB
 #define HiL_LIS2DW12TR_Int2_Pin GPIO_PIN_5

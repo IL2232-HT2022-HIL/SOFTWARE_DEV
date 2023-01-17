@@ -14,6 +14,7 @@ def HiL_client_communication_serial_port(enable):
 
         try:
             ports=serial.tools.list_ports.comports()
+            #COM_PORT = "COM6"
             for port, desc, hwid in sorted(ports):
                 if desc == "STM32 Virtual Port":
                     print("COM PORT: {} used".format(port))
