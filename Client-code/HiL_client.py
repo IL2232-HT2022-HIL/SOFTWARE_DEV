@@ -4,6 +4,11 @@ import HiL_client_communication
 from HiL_config import *
 
 
+
+#-----------------------------
+# Miscellaneous Functions
+
+
 def HiL_client_DAC_conversion(decimal_string, conversion_type = "encode"):
     
 	
@@ -75,8 +80,17 @@ def HiL_client_transaction(instrucion_string):
 
 	return transaction_status
 
+
+#-----------------------------
+# Miscellaneous Instructions	
+
+
 def HiL_client_setup_server_instruction(enable):
 	HiL_client_communication.HiL_client_communication_serial_port(enable)
+
+
+#-----------------------------
+# Atomic Instructions	
 
 
 def HiL_client_turn_on_instruction(binary_object):
@@ -98,47 +112,6 @@ def HiL_client_wait_instruction(string_list):
 
 	sleep_time = wait_time / (TIME_UNITS[time_unit])
 	time.sleep(sleep_time)
-	
-
-def HiL_client_push_instruction(string_list):
-
-	binary_object = string_list[0]
-	wait_time     = float(string_list[3])
-	time_unit     = string_list[4]
-
-	transaction_status = HiL_client_turn_on_instruction(binary_object)
-
-	if transaction_status is not OK:
-		return transaction_status # something bad happened, return error code
-
-
-	print("Pushing {} high for {} {}...".format(binary_object, wait_time, time_unit))
-	sleep_time = wait_time / (TIME_UNITS[time_unit])
-	time.sleep(sleep_time)
-
-
-	transaction_status = HiL_client_turn_off_instruction(binary_object)
-	return transaction_status
-
-def HiL_client_push_low_instruction(string_list):
-		#Active low version of the push instruction
-	binary_object = string_list[0]
-	wait_time     = float(string_list[3])
-	time_unit     = string_list[4]
-
-	transaction_status = HiL_client_turn_off_instruction(binary_object)
-
-	if transaction_status is not OK:
-		return transaction_status # something bad happened, return error code
-
-
-	print("Pushing {} low for {} {}...".format(binary_object, wait_time, time_unit))
-	sleep_time = wait_time / (TIME_UNITS[time_unit])
-	time.sleep(sleep_time)
-
-	transaction_status = HiL_client_turn_on_instruction(binary_object)
-
-	return transaction_status
 
 
 def HiL_client_tune_instruction(string_list):
@@ -148,7 +121,7 @@ def HiL_client_tune_instruction(string_list):
 	split_integer     = [str(i) for i in HiL_client_DAC_conversion(decimal_value)]
 
 	python_instruction = "CONTROLLER_REQUEST_POTENTIOMETER {} {} {}".format(controller_object,split_integer[0],split_integer[1])
-	return HiL_client_transaction(python_instruction)
+	return HiL_client_transaction(python_instruction)	
 
 
 def HiL_client_set_temperature_instruction(string_list):
@@ -171,6 +144,37 @@ def HiL_client_set_humidity_instruction(string_list):
 	return HiL_client_transaction(python_instruction)
 
 
+#-----------------------------
+# Abstracted Instructions
+
+
+def HiL_client_push_instruction(string_list):
+
+	binary_object      = string_list[0]
+	inital_logic_value = string_list[1]
+	wait_time          = float(string_list[3])
+	time_unit          = string_list[4]
+
+	if inital_logic_value == "high":
+		transaction_status = HiL_client_turn_on_instruction(binary_object)
+	else: 
+		transaction_status = HiL_client_turn_off_instruction(binary_object)
+
+	if transaction_status is not OK:
+		return transaction_status # something bad happened, return error code
+
+
+	print("Pushing {} {} for {} {}...".format(binary_object, inital_logic_value, wait_time, time_unit))
+	HiL_client_wait_instruction([wait_time,time_unit])
+
+
+	if inital_logic_value == "high":
+		transaction_status = HiL_client_turn_off_instruction(binary_object)
+	else: 
+		transaction_status = HiL_client_turn_on_instruction(binary_object)
+	
+	
+	return transaction_status
 
 
 def HiL_client_read_shift_register_instruction(controller_object):
@@ -182,19 +186,16 @@ def HiL_client_read_shift_register_instruction(controller_object):
 	for frame_index in range(2):
 	
 		python_instruction = "CONTROLLER_REQUEST_GET {} {}".format(object_group,frame_index) #zero indicates reset pointer
-		print(python_instruction) 
 		reply = HiL_client_transaction(python_instruction)
 
-		print(bin(reply))
 
-		transaction_status = (reply >> 12) & 0xff # status code embedded in last 4 bits
-		received_frame = (reply & 0x1ff) # extract 9 led state from frame
+		transaction_status = (reply >> 12) & 0xff   # status code embedded in last 4 bits
+		received_frame     = (reply        & 0x1ff) # extract 9 led state from frame
 
 		if (transaction_status != 0):
 			return transaction_status, -1
 
 		received_shift_register_state += (received_frame << frame_index*9)
-
 
 	if (CONTROLLER_OBJECTS[controller_object].object_value != 100):
 		index_to_extract = CONTROLLER_OBJECTS[controller_object].object_value
@@ -212,8 +213,8 @@ def HiL_client_read_shift_register_instruction(controller_object):
 
 def HiL_client_check_if_instruction(string_list):
 
-	controller_object = string_list[0]
-	object_group = CONTROLLER_OBJECTS[controller_object].object_get_group
+	controller_object     = string_list[0]
+	object_group          = CONTROLLER_OBJECTS[controller_object].object_get_group
 	expected_value_string = " ".join(string_list[2:])
 	
 	if object_group == "CONTROLLER_GET_GROUP_DATA_STREAMS":
@@ -229,11 +230,11 @@ def HiL_client_check_if_instruction(string_list):
 
 
 	elif object_group == "CONTROLLER_GET_GROUP_TRAFFIC_LIGHTS":
-		
+
 		#extract shift register content
 		transaction_status, received_value = HiL_client_read_shift_register_instruction(controller_object)
 	
-		if CONTROLLER_OBJECTS[controller_object].object_value != 100:
+		if CONTROLLER_OBJECTS[controller_object].object_value != None: 
 			expected_value = bin(int(expected_value_string))
 		
 		else:
@@ -301,25 +302,5 @@ def HiL_client_read_uart_instruction():
 	return transaction_status, received_uart_string
 
 
-def HiL_client_view_display_instruction():
-	
-	controller_object = "DISPLAY"
-	object_group = CONTROLLER_OBJECTS[controller_object].object_get_group
 
-	display_buffer = []
 
-	#reset_pointer 
-	python_instruction = "CONTROLLER_REQUEST_GET {} {} {}".format(object_group,controller_object,0) #resets buffer pointer
-	reply = HiL_client_transaction(python_instruction)
-
-	transaction_status = (reply >> 12) & 0xff # status code embedded in last 4 bits
-	received_character = chr((reply & 0xfff)) # actual useful value 
-
-	if (transaction_status != 0):
-		return transaction_status 
-
-	for i in range(10):
-		python_instruction = "CONTROLLER_REQUEST_GET {} {} {}".format(object_group,controller_object,1) #gets buffer content and increment pointer
-		reply = HiL_client_transaction(python_instruction)
-
-	return 0

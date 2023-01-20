@@ -1,14 +1,15 @@
 
 import HiL_client
-import HiL_client_communication
 from HiL_config import *
 import time
 
 #The methods are called from the robot framework file, and the instruction functions will handle the method call
 class RobotFrameworkLib():
 
+
 	def open_server(self):
 		HiL_client.HiL_client_setup_server_instruction(enable=True)
+
 
 	def close_server(self):
 		HiL_client.HiL_client_setup_server_instruction(enable=False)
@@ -71,6 +72,7 @@ class RobotFrameworkLib():
 			elif (transaction_status != 0):
 				raise Exception("Server: Should not get here, investigate")
 
+
 	def wait (self,instruction):
 
 		string_list = instruction.split(" ")
@@ -85,13 +87,12 @@ class RobotFrameworkLib():
 			HiL_client.HiL_client_wait_instruction(string_list)
 
 
-
 	def push (self,instruction):
 
 		string_list = instruction.split(" ")
 		#Check the length of the string, should be 5
 		if (len(string_list) != 5):
-			raise Exception("Client: Input not correct length, expect 4")
+			raise Exception("Client: Input not correct length, expect 5")
 
 		#check if object is supported
 		elif string_list[0] not in BINARY_OBJECTS:
@@ -108,11 +109,8 @@ class RobotFrameworkLib():
 
 
 		else:
-			if string_list[1] == "high":
-				transaction_status = HiL_client.HiL_client_push_instruction(string_list)
-			else:
-				transaction_status = HiL_client.HiL_client_push_low_instruction(string_list)
-
+			transaction_status = HiL_client.HiL_client_push_instruction(string_list)
+			
 			#Server Error Checking
 			if (transaction_status == 1):
 				raise Exception("Server: Non-specified error")
@@ -139,7 +137,6 @@ class RobotFrameworkLib():
 		elif string_list[0] not in POT_OBJECTS:
 			raise Exception("Client: Object is not supported")
 	
-
 		elif string_list[1] != "to":
 			raise Exception("Client: Missing word: to")
 
@@ -265,7 +262,6 @@ class RobotFrameworkLib():
 		pass
 
 
-
 	def read_UART (self): 
 	
 		transaction_status,received_uart_string = HiL_client.HiL_client_read_uart_instruction()
@@ -286,123 +282,11 @@ class RobotFrameworkLib():
 			print(received_uart_string)
 
 
-	def view_display (self):
-
-		transaction_status = HiL_client.HiL_client_view_display_instruction()
-
-		if (transaction_status == 1):
-			raise Exception("Server: Non-specified error")
-
-		elif (transaction_status == 2):
-			raise Exception("Server: Object not supported")
-
-		elif (transaction_status == 3):
-			raise Exception("Server: Non-valid requested state")
-		
-		elif (transaction_status != 0):
-			raise Exception("Server: Should not get here, investigate")
-
-		else:
-			pass
-
-
-
-# The following codes are just for debugging this file
-obj = RobotFrameworkLib()
 if __name__=="__main__":
-
-	obj.open_server()
-
-	# Simple test of pushing button and reading traffic lights.
-	# Default status mode on startup
-
-	obj.wait("200 milliseconds")
+	obj = RobotFrameworkLib()
 
 	obj.check_if("TRAFFIC_LIGHTS are ALL_ON")
-
-	obj.push("button3_center low for 100 milliseconds")
-
-	obj.close_server()
-
-	# Potentiometer mode
-	obj.check_if("TRAFFIC_LIGHTS are ALL_ON")
-
-	obj.push("button3_center low for 100 milliseconds")
-
-	obj.wait("2 seconds")
-
-	# Humidity and temperature mode
-
-	obj.check_if("TRAFFIC_LIGHTS are ALL_ON")
-
-	obj.push("button3_center low for 100 milliseconds")
-
-	obj.wait("7 seconds")
-
-	# ENTERS LIGHT MODE but skips the first vertical_green
-
-	obj.check_if("TRAFFIC_LIGHTS are VERTICAL_YELLOW")  # Tl2 & TL4
-
-	obj.wait("3 seconds")
-
-	obj.check_if("TRAFFIC_LIGHTS are ALL_RED")
-
-	obj.wait("3 seconds")
-
-	obj.check_if("TRAFFIC_LIGHTS are HORIZONTAL_YELLOW")  # Tl1 & TL3
-
-	obj.wait("3 seconds")
-
-	obj.check_if("TRAFFIC_LIGHTS are HORIZONTAL_GREEN")  # Tl1 & TL3
-
-	obj.wait("10 seconds")
-
-	obj.check_if("TRAFFIC_LIGHTS are HORIZONTAL_YELLOW")  # Tl1 & TL3
-
-	obj.wait("3 seconds")
-
-	obj.check_if("TRAFFIC_LIGHTS are ALL_RED")
-
-	obj.push("button3_center low for 100 milliseconds")
-
-	obj.close_server()
-
-	#Test read UART
-
-	obj.wait("200 milliseconds")
-	obj.read_UART()
-
-	obj.close_server()
-
-	#Test binary GPIO checks
-
-	obj.wait("200 milliseconds")
-	obj.check_if("USR_LED2 is 1")
-
-	obj.close_server()
-
-	#Test PWM measurement
-
-	obj.wait("200 milliseconds")
-	obj.tune("Poti to 1.67")		# 1.67 is Vdd/2 -> 50 % duty cycle
-									# duty cycle = 100*(3.3-poti value)/3.3
-
-	obj.check_if("PWM_MEASUREMENT are 50")  # duty cycle = 100*(3.3-poti value)/3.3
-
-	obj.close_server()
-
-
-	#Turn on test
-
-	obj.wait("200 milliseconds")
-
-	obj.push("button3_D high for 200 milliseconds")
-
-	obj.wait("200 milliseconds")
-
-	obj.turn_on("button3_A")
-
-	obj.close_server()
+	
 
 
 	

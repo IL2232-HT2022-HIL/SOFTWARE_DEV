@@ -36,6 +36,7 @@
 #define CONTROLLER_VALUE1 0
 #define CONTROLLER_VALUE2 1
 
+
 // -------------------------------------
 // CONTROLLER_REQUESTS
 
@@ -53,6 +54,7 @@
 #define CONTROLLER_GET_GROUP_POT_OBJECTS  	2
 #define CONTROLLER_GET_GROUP_DATA_STREAMS 	3 // Get data from e.g UART
 #define CONTROLLER_GET_GROUP_TRAFFIC_LIGHTS 4 // Get data from SPI for traffic lights.
+
 
 // -------------------------------------
 // CONTROLLER_OBJECTS
@@ -91,7 +93,6 @@
 #define DATA_STREAM_OBJECTS_DISPLAY  1
 
 
-
 // -------------------------------------
 // ACTIONS
 
@@ -99,6 +100,7 @@
 #define ON  1
 #define GPIO_PIN_RESET 0
 #define GPIO_PIN_SET   1
+
 
 // -------------------------------------
 // ERROR CODES
